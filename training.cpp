@@ -15,7 +15,7 @@ class Data{
     public:
     Data();
     void vector_handler(cv::Mat img);
-    void Save_data();
+    void Save_data(string stream);
 };
 
 
@@ -112,8 +112,8 @@ void Data::vector_handler(cv::Mat img){
 
 
 
-void Data::Save_data(){
-    std::ofstream f("weight_data.txt");
+void Data::Save_data(string stream){
+    std::ofstream f(stream);
     for(auto &pair:weight){
         f<<pair<<' ';
     }
