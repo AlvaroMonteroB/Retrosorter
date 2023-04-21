@@ -16,7 +16,7 @@ Percept::Percept(string filename){
     train_data=filename;
     std::ifstream f(train_data);
     int valor;
-    while(f>>valor){
+    while(f>>std::setw(4)>>valor){
         weight.push_back(valor);
     }
     f.close();
