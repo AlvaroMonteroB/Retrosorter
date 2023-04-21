@@ -6,13 +6,15 @@ using std::vector;
 class Percept{
     private:
     vector<int> weight;
+    string train_data;
     public:
     Percept();
     int neuron(vector<uchar>input);
 };
 
-Percept::Percept(){
-    std::ifstream f("weigth_data.txt");
+Percept::Percept(string filename){
+    train_data=filename;
+    std::ifstream f(train_data);
     int valor;
     while(f>>valor){
         weight.push_back(valor);
