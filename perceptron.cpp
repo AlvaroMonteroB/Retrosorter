@@ -3,12 +3,13 @@
 #include<iomanip>
 typedef unsigned char uchar;
 using std::vector;
+using std::string;
 class Percept{
     private:
     vector<int> weight;
     string train_data;
     public:
-    Percept();
+    Percept(string filename);
     int neuron(vector<uchar>input);
 };
 
