@@ -97,7 +97,7 @@ void Data::vector_handler(cv::Mat img){
                     pixels.insert(pixels.end(),row,row+img.cols*img.channels());
                 }
             }
-            for (int i = 0; i < pixels.size(); i++)
+            for (unsigned int i = 0; i < pixels.size(); i++)
             {
                 if(pixels[i]>240){
                     weight[i]+=1;
@@ -126,7 +126,7 @@ void Data::Save_data(string stream){
 
 
 void training(){
-    std::string path = "../train_data"; // Ruta de la carpeta
+    std::string path = "../../train_data"; // Ruta de la carpeta
     vector<string> file_names;
     Data weight;
     for (const auto& entry : fs::directory_iterator(path)) {
@@ -143,7 +143,7 @@ void training(){
     for(Image &pair:images){//Convertir imagenes a vectores
         weight.vector_handler(pair.get_img_data());
     }
-    
-    weight.Save_data();
+    std::cout<<"Trained\n";
+    weight.Save_data("../../weight_data.txt");
     return;
 }
