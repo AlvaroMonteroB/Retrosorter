@@ -32,6 +32,7 @@ class Data{//Clase para construir el vector de pesos
         name=file_name;
         size=sz;
     }
+    
     vector<uchar> vector_handler(cv::Mat img){
         unsigned int step=unsigned int(img.step);
         vector<uchar> pixels;
@@ -139,6 +140,7 @@ class Percept{
     vector<int> get_weight(){
         return weight;
     }
+    
     Percept(string filename){//Adquirir el vector de pesos
         train_data=filename;
         umbral=0;
@@ -155,11 +157,11 @@ class Percept{
         int suma=0;
         for (int i = 0; i < input.size(); i++)
         {
-        suma+=weight[i]*input[i]; 
+        suma+=weight[i]*(255-input[i]); 
         }
         return suma;
 }
-    
+    //Leemos la imagen para multiplicarla por el vector de pesos
     vector<uchar> input_data(string name){//Leerá una imagen a la vez
         vector<uchar>output;//Salida de la funcion
         Image file=Image(name);
