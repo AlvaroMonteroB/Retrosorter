@@ -4,12 +4,14 @@ using std::cout;
 
 void main(){
     vector<File_umbral>file_names;
-    vector<string>names=testing_path("../test_data");    
-    for (auto &pair:names)
+    //vector<string>names=testing_path("../test_data");    
+    /*for (auto &pair:names)
     {
         File_umbral test={pair,0};
         file_names.push_back(test);
-    }
+    }*/
+    File_umbral test={"../test_data/omero.png",0};
+    file_names.push_back(test);
     
     
     

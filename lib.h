@@ -214,7 +214,6 @@ class Percept{
         std::ifstream F(threshold);
         std::getline(F,direction);
         umbral=std::stoi(direction);
-        std::cout<<umbral<<"\n";
 
     }
 
@@ -262,7 +261,7 @@ vector<File_umbral> neural_application(vector<File_umbral>file_names,string weig
     {
         vector<uchar>img=Neuron1.input_data(pair.file);
         pair.sum=Neuron1.neuron(img);
-        if(pair.sum>Neuron1.get_threshhold()){
+        if(pair.sum<Neuron1.get_threshhold()){
             std::cout<<pair.file<<" Es una camara con puntuacion "<<pair.sum<<'\n' ;
         }else{
             std::cout<<pair.file<<" No es una camara con puntuacion "<<pair.sum<<'\n';
@@ -277,7 +276,6 @@ vector<File_umbral> neural_application(vector<File_umbral>file_names,string weig
 }   
 
 vector <string> testing_path(string path){
-    path="../test_data";
     vector<string> file_names;
     for (const auto& entry : fs::directory_iterator(path)) {
         if (entry.is_regular_file()) { // Verificar si es un archivo regular
