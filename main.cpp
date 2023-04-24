@@ -10,7 +10,10 @@ void main(){
         File_umbral test={pair,0};
         file_names.push_back(test);
     }*/
-    File_umbral test={"../test_data/omero.png",0};
+    string path;
+    cout<<"Path de tu archivo\n";
+    std::cin>>path;//../test_data/omero.png
+    File_umbral test={path,0};
     file_names.push_back(test);
     
     
