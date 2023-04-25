@@ -278,6 +278,7 @@ vector<File_umbral> neural_application(vector<File_umbral>file_names,string weig
     
 }   
 
+//Conseguir los archivos para el testeo
 vector <string> testing_path(string path){
     vector<string> file_names;
     for (const auto& entry : fs::directory_iterator(path)) {
