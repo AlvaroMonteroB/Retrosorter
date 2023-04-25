@@ -1,5 +1,6 @@
 #include<vector>
 #include<fstream>
+#include<thread>
 #include<filesystem>
 #include<opencv2/opencv.hpp>
 #include<stdio.h>
