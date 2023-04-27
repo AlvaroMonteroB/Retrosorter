@@ -14,6 +14,11 @@ using std::vector;
 using std::string;
 namespace fs=std::filesystem;
 #define PIXEL_UMBRAL 100
+typedef struct{
+        string umbral;
+        string weights;
+}Operation_data;
+
 
 
 typedef struct{
@@ -267,19 +272,25 @@ class Percept{
 //==================================TRAINING FUNCTION==========================================================
 //=============================================================================================================
 
-void training(string weight_neuron){
+void training(string weight_neuron,string train_file, string folder){
 
-    std::string path = "../train_data"; // Ruta de la carpeta
     vector<string> file_names;
     Data weight(weight_neuron,0);
     
-    for (const auto& entry : fs::directory_iterator(path)) {
+    for (const auto& entry : fs::directory_iterator(folder)) {
         if (entry.is_regular_file()) { // Verificar si es un archivo regular
             file_names.push_back(entry.path().string()); //aqui guardamos cada nombre del directorio
             
         }
     }
+
     vector<Image> images;
+    vector<std::thread> hilos;//Vamos a usar máximo 6 hilos
+    
+}
+
+void thread_training(vector<string>file_names,vector<Image>images){
+    Data weight("si");
     int i=0;
     for (auto &pair:file_names)//Ahora formamos un vector con las imagenes
     {
@@ -288,23 +299,25 @@ void training(string weight_neuron){
     for(Image &pair:images){//Convertir imagenes a vectores
         weight.vector_handler(pair.get_img_data());
     }
-    std::cout<<"Trained\n";
-    weight.Save_data("../weight_data.txt");
+    
     return;
 }
 
+<<<<<<< HEAD
 void 
 
+=======
+>>>>>>> 5f28731dc41c808bb9428a0dcb2528a285638cad
 //==============================================================================================================
 //============================================NEURON APPLICATION===================================================
-vector<File_umbral> neural_application(vector<File_umbral>file_names,string weight_file){
+/*vector<File_umbral> neural_application(vector<File_umbral>file_names){
     Percept Neuron1(weight_file);
-    Neuron1.read_threshold("../umbral.txt");
+    Neuron1.read_threshold(threshold_file);
     for (auto &pair:file_names)
     {
         vector<uchar>img=Neuron1.input_data(pair.file);
         pair.sum=Neuron1.neuron(img);
-        if(pair.sum<Neuron1.get_threshhold()){
+        if(pair.sum>Neuron1.get_threshhold()){
             std::cout<<pair.file<<" Es una camara con puntuacion "<<pair.sum<<'\n' ;
         }else{
             std::cout<<pair.file<<" No es una camara con puntuacion "<<pair.sum<<'\n';
@@ -317,7 +330,7 @@ vector<File_umbral> neural_application(vector<File_umbral>file_names,string weig
     return file_names;
     
 }   
-
+*/
 //Conseguir los archivos para el testeo
 vector <string> testing_path(string path){
     vector<string> file_names;
