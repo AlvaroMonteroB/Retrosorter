@@ -6,6 +6,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<map>
+#include<omp.h>
 #include<iostream>
 
 using cv::Mat;
@@ -34,7 +35,7 @@ class Data{//Clase para construir el vector de pesos
         size=sz;
     }
     
-    vector<uchar> vector_handler(cv::Mat img){
+    vector<uchar> vector_handler(cv::Mat img){//Este handler es por si quiero entrenar varias neuronas a la vez con no muchos datos
         unsigned int step=unsigned int(img.step);
         vector<uchar> pixels;
         cv::Size dim=img.size();
@@ -87,7 +88,45 @@ class Data{//Clase para construir el vector de pesos
     return pixels;
 }
 
-    void save_new_vector(vector<int>wg,string file){
+    vector<int>threaded_vector(cv::Mat img){//Este es para entrenar a la neurona con muchos datos
+        vector<int>peso;
+        peso.resize(img.total())
+        unsigned int step=unsigned int(img.step);
+        vector<uchar> pixels;
+        cv::Size dim=img.size();
+        size=(dim.width*dim.height);
+        if (img.isContinuous()){
+                pixels.assign(img.data,img.data+img.total()*img.channels());
+        }else{
+            for (int i = 0; i < dim.height; i++)
+                {
+                    uchar*row=img.ptr<uchar>(i);
+                    pixels.insert(pixels.end(),row,row+img.cols*img.channels());
+                }
+            }
+
+        for (unsigned int i = 0; i < pixels.size(); i++)
+            {
+                if(pixels[i]<PIXEL_UMBRAL){
+                    peso[i]+=1;
+                }
+            }
+        return peso;//Este resultado se debe tomar de cada thread para usarlo
+    }
+    
+    void final_vector(vector<vector<int>pesos,string adress_){
+        weight.resize(pesos[0].size());
+        #pragma omp parallel for
+        for (auto &vect_:pesos)
+        {
+            for(int i;i=0;i++){
+                weight[i]+=vect_[i];
+            }
+        }
+        Save_data(adress_)
+    }
+
+    void save_new_vector(vector<int>wg,string file){//Este es para reforzar el entrenamiento
         weight=wg;
         Save_data(file);
     }
@@ -254,6 +293,7 @@ void training(string weight_neuron){
     return;
 }
 
+void 
 
 //==============================================================================================================
 //============================================NEURON APPLICATION===================================================
