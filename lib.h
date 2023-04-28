@@ -119,12 +119,13 @@ class Data{//Clase para construir el vector de pesos
         return peso;//Este resultado se debe tomar de cada thread para usarlo
     }
     
-    void final_vector(vector<vector<int>pesos,string adress_){
-        weight.resize(pesos[0].size());
-        #pragma omp parallel for
+    void final_vector(vector<vector<int>pesos,string adress_){//Vamos a sumar todos los vectores a la vez
+        siz=pesos[0].size()
+        weight.resize(siz);
+        #pragma omp parallel for reduction(+:weight)
         for (auto &vect_:pesos)
         {
-            for(int i;i=0;i++){
+            for(int i;i<siz;i++){
                 weight[i]+=vect_[i];
             }
         }
