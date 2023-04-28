@@ -21,6 +21,18 @@ typedef struct{
 
 
 
+
+typedef struct{
+    int sum;
+    string file;
+}Sum_name;
+
+typedef struct{
+    string file;
+    vector<int>weight;
+}File_weight;
+
+
 typedef struct{
     string file;
     int sum;
@@ -95,8 +107,7 @@ class Data{//Clase para construir el vector de pesos
 
     vector<int>threaded_vector(cv::Mat img){//Este es para entrenar a la neurona con muchos datos
         vector<int>peso;
-        peso.resize(img.total())
-        unsigned int step=unsigned int(img.step);
+        peso.resize(img.total());
         vector<uchar> pixels;
         cv::Size dim=img.size();
         size=(dim.width*dim.height);
@@ -119,8 +130,8 @@ class Data{//Clase para construir el vector de pesos
         return peso;//Este resultado se debe tomar de cada thread para usarlo
     }
     
-    void final_vector(vector<vector<int>pesos,string adress_){//Vamos a sumar todos los vectores a la vez
-        siz=pesos[0].size()
+    void final_vector(vector<vector<int>>pesos,string adress_){//Vamos a sumar todos los vectores a la vez
+        int siz=pesos[0].size();
         weight.resize(siz);
         #pragma omp parallel for reduction(+:weight)
         for (auto &vect_:pesos)
@@ -129,7 +140,7 @@ class Data{//Clase para construir el vector de pesos
                 weight[i]+=vect_[i];
             }
         }
-        Save_data(adress_)
+        Save_data(adress_);
     }
 
     void save_new_vector(vector<int>wg,string file){//Este es para reforzar el entrenamiento
@@ -137,7 +148,7 @@ class Data{//Clase para construir el vector de pesos
         Save_data(file);
     }
 
-    void Save_data(string stream){
+    void Save_data(string stream){//Guardamos el vector de pesos en un archivo
     std::ofstream f(stream);
     for(auto &pair:weight){
         f<<pair<<' ';
@@ -154,11 +165,11 @@ class Image{
         cv::Mat image;
         int channels;
         vector<int> value;
-        void get_channels(){
-    channels=image.channels();  
-}
+        void get_channels(){//Metodo privado para obtener los canales
+            channels=image.channels();  
+            }
     public:
-        Image(string name){
+        Image(string name){//Constructor que lee las imagenes y adquiere los canales
         image=cv::imread(name,cv::IMREAD_GRAYSCALE);
         if(!image.data){
             printf("Couldn't read data \n");
@@ -167,7 +178,8 @@ class Image{
         get_channels();
     
 }
-        cv::Mat get_img_data(){
+        
+        cv::Mat get_img_data(){//Retorna la matriz de imagen
     return image;
 }
         
@@ -178,35 +190,50 @@ class Image{
 
 class Percept{
     private:
+    vector<File_weight>Weight_matrix;
     vector<int> weight;//El vector de pesos adquirido
-    string train_data;//Direccion y nombre del archivo de pesos
     string threshold;
     int umbral;
     public:
-    vector<int> get_weight(){
-        return weight;
+    vector<int> get_weight(int i){//Adquirir el vector de pesos
+        return Weight_matrix[i].weight;
     }
     
-    Percept(string filename){//Adquirir el vector de pesos
-        train_data=filename;
+    Percept(vector<string> file_names){//Adquirir el vector de pesos
+        File_weight aux;
+       for (auto &pair:file_names)
+       {
         umbral=0;
         threshold="hello";
-        std::ifstream f(train_data);
+        std::ifstream f(pair);
         int valor;
         while(f>>std::setw(4)>>valor){
             weight.push_back(valor);
-        }
+        }//Aqui se llena el primer vector de pesos
         f.close();
+        aux={pair,weight};
+        Weight_matrix.push_back(aux);
+        weight.clear();
+       }
+        
     }
     
-    int neuron(vector<uchar>input){//Algoritmo de la neurona
-        int suma=0;
-        for (int i = 0; i < input.size(); i++)
+    vector<Sum_name> neuron(vector<uchar>input){//Algoritmo de la neurona
+        vector<Sum_name>result;
+        int sum=0;
+        Sum_name aux={0,""};
+        #pragma omt parallel for
+        for (auto &pair:Weight_matrix)
         {
-        suma+=weight[i]*(255-input[i]); 
+            for (int i = 0; i < pair.weight.size(); i++)
+            {
+                sum+=(255-input[i])*pair.weight[i];
+            }
+            result.push_back({sum,pair.file});
         }
-        return suma;
-}
+        
+    
+    }
     //Leemos la imagen para multiplicarla por el vector de pesos
     vector<uchar> input_data(string name){//Leerá una imagen a la vez
         vector<uchar>output;//Salida de la funcion
@@ -257,7 +284,7 @@ class Percept{
         
     }
 
-    void read_threshold(string direction){
+    void read_threshold(string direction){//Leer el umbral
         threshold=direction;
         std::ifstream F(threshold);
         std::getline(F,direction);
@@ -265,7 +292,7 @@ class Percept{
 
     }
 
-    int get_threshhold(){
+    int get_threshhold(){//Tener el umbral
         return umbral;
     }
 };
@@ -273,25 +300,31 @@ class Percept{
 //==================================TRAINING FUNCTION==========================================================
 //=============================================================================================================
 
-void training(string weight_neuron,string train_file, string folder){
+void heavy_training(string weight_file,string root_index){//Este entrenamiento es para solo una neurona con muchos datos
+    Data h_data(weight_file,0);
+    vector<Image>images=Read_images(root_index);
+    vector<vector<int>>result;
+    #pragma omp parallel for
+    for(auto &pair:images){
+        result.push_back(h_data.threaded_vector(pair.get_img_data()));
+    }
+    h_data.final_vector(result,weight_file);
+}
 
+
+void training(string weight_neuron){//Para entrenar una sola neurona con poca información
+
+    std::string path = "../train_data"; // Ruta de la carpeta
     vector<string> file_names;
     Data weight(weight_neuron,0);
     
-    for (const auto& entry : fs::directory_iterator(folder)) {
+    for (const auto& entry : fs::directory_iterator(path)) {
         if (entry.is_regular_file()) { // Verificar si es un archivo regular
             file_names.push_back(entry.path().string()); //aqui guardamos cada nombre del directorio
             
         }
     }
-
     vector<Image> images;
-    vector<std::thread> hilos;//Vamos a usar máximo 6 hilos
-    
-}
-
-void thread_training(vector<string>file_names,vector<Image>images){
-    Data weight("si");
     int i=0;
     for (auto &pair:file_names)//Ahora formamos un vector con las imagenes
     {
@@ -300,15 +333,38 @@ void thread_training(vector<string>file_names,vector<Image>images){
     for(Image &pair:images){//Convertir imagenes a vectores
         weight.vector_handler(pair.get_img_data());
     }
-    
+    std::cout<<"Trained\n";
+    weight.Save_data("../weight_data.txt");
     return;
 }
 
-<<<<<<< HEAD
-void 
+void thread_training(vector<Image>images,string train_file){//Para entrenar varias neuronas a la vez
+    Data weight("si");
+    int i=0;
+    for(Image &pair:images){//Convertir imagenes a vectores
+        weight.vector_handler(pair.get_img_data());
+    }
+    std::cout<<"Trained\n";
+    weight.Save_data(train_file);
+    return;
+}
 
-=======
->>>>>>> 5f28731dc41c808bb9428a0dcb2528a285638cad
+vector<Image>Read_images(string root_path){//Leer el directorio raiz para sacar las imagenes en el
+    vector<string>filenames;
+    for (const auto& entry : fs::directory_iterator(root_path)) {
+        if (entry.is_regular_file()) { // Verificar si es un archivo regular
+            filenames.push_back(entry.path().string()); //aqui guardamos cada nombre del directorio
+            
+        }
+    }
+    vector<Image>output;
+    for(auto &pair:filenames){
+        output.push_back(pair);
+    }
+    return output;
+}
+
+
 //==============================================================================================================
 //============================================NEURON APPLICATION===================================================
 /*vector<File_umbral> neural_application(vector<File_umbral>file_names){

@@ -1,8 +1,10 @@
 #include"lib.h"
 using std::cout;
 
+void training();
+
 void main(){
-    vector<File_umbral>file_names;
+    
     //vector<string>names=testing_path("../Camera_data);    
     /*for (auto &pair:names)
     {
@@ -16,5 +18,10 @@ void main(){
 
     
     
+}
+
+
+
+void training(){
     
 }
