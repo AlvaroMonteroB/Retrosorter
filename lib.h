@@ -254,7 +254,7 @@ class Percept{
         return output;
     }
     
-    void reinforcement(cv::Mat img){
+    void reinforcement(cv::Mat img,int num_vector){
         unsigned int step=unsigned int(img.step);
         vector<uchar> pixels;
         cv::Size dim=img.size();
@@ -271,7 +271,7 @@ class Percept{
             for (unsigned int i = 0; i < pixels.size(); i++)
             {
                 if(pixels[i]<PIXEL_UMBRAL){
-                    weight[i]+=1;
+                    Weight_matrix[num_vector].weight[i]+=1;
                 }
             }
             
@@ -279,7 +279,7 @@ class Percept{
 
         }
         Data output("No_name");
-        output.save_new_vector(weight,train_data);
+        output.save_new_vector(weight,Weight_matrix[num_vector].file);
         
         
     }
