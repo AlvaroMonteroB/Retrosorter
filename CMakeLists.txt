@@ -4,11 +4,13 @@ set(CMAKE_CXX_STANDARD 17)
 include(CTest)
 enable_testing()
 find_package( OpenCV REQUIRED )
+find_package(OpenMP REQUIRED)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 add_executable(Inv_proj1 main.cpp lib.h)
 
-target_link_libraries( Inv_proj1 ${OpenCV_LIBS} )
+target_link_libraries( Inv_proj1 PRIVATE ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
+
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
