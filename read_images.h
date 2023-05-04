@@ -2,6 +2,8 @@
 #include<iostream>
 #include<vector>
 #include<omp.h>
+#include<cmath>
+#include<math.h>
 using namespace std;
 typedef unsigned char uchar;
 
@@ -113,7 +115,7 @@ vector<uchar> Image::im_read(string path){
         optn=3;
     }else{
         std::cout<<"Format not supported\n";
-        return;
+        exit(0);
     }
 
     
