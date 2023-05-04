@@ -136,7 +136,6 @@ class Data{//Clase para construir el vector de pesos
     void final_vector(vector<vector<int>>pesos,string adress_){//Vamos a sumar todos los vectores a la vez
         int siz=pesos[0].size();
         weight.resize(siz);
-        #pragma omp parallel for reduction(+:weight)
         for (auto &vect_:pesos)
         {            
             for(int i=0;i<siz;i++){
@@ -226,7 +225,6 @@ class Percept{
         vector<Sum_name>result;
         int sum=0;
         Sum_name aux={0,""};
-        #pragma omp parallel for
         for (auto &pair:Weight_matrix)
         {
             for (int i = 0; i < pair.weight.size(); i++)
@@ -308,7 +306,6 @@ void heavy_training(string weight_file,string root_index){//Este entrenamiento e
     Data h_data(weight_file,0);std::cout<<"Aqui llega\n";
     vector<Image>images=Read_images(root_index);
     vector<vector<int>>result;
-    #pragma omp parallel for
     for(auto &pair:images){
         result.push_back(h_data.threaded_vector(pair.get_img_data()));
     }
