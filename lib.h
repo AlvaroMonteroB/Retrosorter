@@ -37,6 +37,9 @@ typedef struct{
     string file;
     int sum;
 }File_umbral;
+//
+//==========================
+//
 
 //=============================================================================================================
 //======================================================CLASES=================================================
@@ -72,7 +75,7 @@ class Data{//Clase para construir el vector de pesos
         
         for (auto &pair:pixels)
         {
-            if(pair<PIXEL_UMBRAL){
+            if(pair>PIXEL_UMBRAL){
                 weight.push_back(1);
             }else{
                 weight.push_back(0);
@@ -93,7 +96,7 @@ class Data{//Clase para construir el vector de pesos
             }
             for (unsigned int i = 0; i < pixels.size(); i++)
             {
-                if(pixels[i]<PIXEL_UMBRAL){
+                if(pixels[i]>PIXEL_UMBRAL){
                     weight[i]+=1;
                 }
             }
@@ -135,8 +138,8 @@ class Data{//Clase para construir el vector de pesos
         weight.resize(siz);
         #pragma omp parallel for reduction(+:weight)
         for (auto &vect_:pesos)
-        {
-            for(int i;i<siz;i++){
+        {            
+            for(int i=0;i<siz;i++){
                 weight[i]+=vect_[i];
             }
         }
@@ -170,11 +173,12 @@ class Image{
             }
     public:
         Image(string name){//Constructor que lee las imagenes y adquiere los canales
-        image=cv::imread(name,cv::IMREAD_GRAYSCALE);
+        cv::Mat Aimage=cv::imread(name,cv::IMREAD_GRAYSCALE);
         if(!image.data){
             printf("Couldn't read data \n");
             return;
         }
+        cv::Canny(Aimage,image,100,200,3);
         get_channels();
     
 }
@@ -185,7 +189,7 @@ class Image{
         
 };
 
-
+vector<Image>Read_images(string root_path);
 
 
 class Percept{
@@ -222,12 +226,12 @@ class Percept{
         vector<Sum_name>result;
         int sum=0;
         Sum_name aux={0,""};
-        #pragma omt parallel for
+        #pragma omp parallel for
         for (auto &pair:Weight_matrix)
         {
             for (int i = 0; i < pair.weight.size(); i++)
             {
-                sum+=(255-input[i])*pair.weight[i];
+                sum+=(input[i])*pair.weight[i];
             }
             result.push_back({sum,pair.file});
         }
@@ -299,9 +303,9 @@ class Percept{
 //=============================================================================================================
 //==================================TRAINING FUNCTION==========================================================
 //=============================================================================================================
-
+//Archivo de pesos y la carpeta de los datos de entrenamiento
 void heavy_training(string weight_file,string root_index){//Este entrenamiento es para solo una neurona con muchos datos
-    Data h_data(weight_file,0);
+    Data h_data(weight_file,0);std::cout<<"Aqui llega\n";
     vector<Image>images=Read_images(root_index);
     vector<vector<int>>result;
     #pragma omp parallel for
@@ -309,6 +313,7 @@ void heavy_training(string weight_file,string root_index){//Este entrenamiento e
         result.push_back(h_data.threaded_vector(pair.get_img_data()));
     }
     h_data.final_vector(result,weight_file);
+    std::cout<<"Trained\n";
 }
 
 
@@ -334,7 +339,7 @@ void training(string weight_neuron){//Para entrenar una sola neurona con poca in
         weight.vector_handler(pair.get_img_data());
     }
     std::cout<<"Trained\n";
-    weight.Save_data("../weight_data.txt");
+    weight.Save_data("../weights/weight_data_Camera.txt");
     return;
 }
 
