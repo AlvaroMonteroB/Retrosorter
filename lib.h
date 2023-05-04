@@ -136,7 +136,7 @@ class Percept{
             }
             result.push_back({sum,pair.file});
         }
-        
+        return result;
     
     }
     //Leemos la imagen para multiplicarla por el vector de pesos
