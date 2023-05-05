@@ -1,6 +1,7 @@
 #include<fstream>
 #include<iostream>
 #include<vector>
+#include<cmath>
 #include<omp.h>
 using namespace std;
 typedef unsigned char uchar;
