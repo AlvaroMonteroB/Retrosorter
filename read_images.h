@@ -152,7 +152,7 @@ void Image::im_read(string path,bool band){//true=color   false = b & n
     
     
 }
-
+//exit
 void Image::read_bmp(string path){
     ifstream F(path,std::ios::binary);
     if(!F.is_open()){
@@ -222,6 +222,7 @@ Image Image::canny(float threshold1,float threshold2){
     magnitude_direction(gradx,grady,direccion,magnitud);
     hysteresis_thresholding(magnitud,direccion,edges,threshold1,threshold2,width,height);
     output.assign_vector(edges);
+    cout<<"Canny vector "<<output.Size();
     return output;
 }
 
