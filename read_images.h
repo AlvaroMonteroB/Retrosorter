@@ -137,6 +137,7 @@ void Image::read_bmp(string path){
     size=get_number(header.img_size,4);
     step=get_number(header.img_depht,2);
     F.seekg(get_number(header.file_des,4),std::ios::beg);//Posicionamos el apuntador al final del offset
+    pixels.reserve(channels*size);
     F.read(reinterpret_cast<char*>(pixels.data()),size);//Leemos todos los pixeles y se almacenan en un vector
    cout<<"bmp leido\n";
     
