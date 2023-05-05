@@ -131,8 +131,8 @@ void Image::read_bmp(string path){
     type="bmp";
     BMP_H header;
     F.read(reinterpret_cast<char*>(&header),sizeof(header));
-    width=reinterpret_cast<uint>(header.img_width);//Obteniendo el alto y ancho de la imagen
-    height=reinterpret_cast<uint>(header.img_height);
+    width=stoi(reinterpret_cast<char*>(header.img_width));//Obteniendo el alto y ancho de la imagen
+    height=stoi(reinterpret_cast<char*>(header.img_height));
     channels=reinterpret_cast<int>(header.img_depht);//
     size=reinterpret_cast<int>(header.img_size);
     step=reinterpret_cast<int>(header.img_depht);
