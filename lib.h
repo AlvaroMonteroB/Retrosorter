@@ -55,6 +55,8 @@ class Data{//Clase para construir el vector de pesos
     }
     
     vector<uchar> vector_handler(){//Este handler es por si quiero entrenar varias neuronas a la vez con no muchos datos
+        vector<uchar>output;
+        return output;
     }
 
 //Este resultado se debe tomar de cada thread para usarlo

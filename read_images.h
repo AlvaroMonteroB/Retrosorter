@@ -79,7 +79,7 @@ class Image{//Al final solo necesitamos los bordes
         void get_grey();
         void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type);
     public:
-        vector<uchar> im_read(string path);
+        void im_read(string path);
         void assign_vector(vector<uchar>input);
         Image(string name);
         Image canny(float threshold1,float threshold2 );
@@ -103,7 +103,7 @@ Image::Image(string name){
 }
 
 
-vector<uchar> Image::im_read(string path){
+void Image::im_read(string path){
     int optn;
     if (isBMP(path))
     {
