@@ -61,6 +61,9 @@ void hysteresis_thresholding(vector<float> magnitud, vector<float> direction, ve
 void sobel_filter(vector<vector<uchar>>img_2d,vector<float> &grad_x,vector<float>&grad_y);
 void magnitude_direction(vector<float> grad_x,vector<float>grad_y,vector<float>&direction,vector<float>&magnitud);
 vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int width, int height, int kernel_size, double sigma);
+char* header_to_char(BMP_H header);
+uchar*data(int num,int size);//int to array of unsigned char
+
 //
 //==========================Clases
 
@@ -81,6 +84,7 @@ class Image{//Al final solo necesitamos los bordes
         void read_png();
         void get_grey();
         void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
+        vector<uchar*> modif_header();
     public:
         void im_read(string path,bool band);
         void assign_vector(vector<uchar>input);
@@ -160,9 +164,9 @@ void Image::read_bmp(string path){
     F.read(reinterpret_cast<char*>(&header),sizeof(header));
     width=get_number(header.img_width,4);//Obteniendo el alto y ancho de la imagen
     height=get_number(header.img_height,4);
-    channels=get_number(header.img_depht,2);//
+    channels=get_number(header.img_depht,2)/8;//
     size=get_number(header.img_size,4);
-    step=get_number(header.img_depht,2);
+    step=get_number(header.img_depht,2)/8;
     F.seekg(get_number(header.file_des,4),std::ios::beg);//Posicionamos el apuntador al final del offset
     pixels.reserve(channels*size);
     F.read(reinterpret_cast<char*>(pixels.data()),size);//Leemos todos los pixeles y se almacenan en un vector
@@ -230,11 +234,38 @@ vector<uchar> Image::grey_vector(){
     return g_img;
 }
 
+vector<uchar*> Image::modif_header(){
+    vector<uchar*>output;
+    uchar profundidad[2];
+    profundidad[0]=((channels*8)>>0)&0xff;
+    profundidad[1]=((channels*8)>>8)&0xff;
+    output.push_back(header.file_header);
+    output.push_back(header.file_size);
+    output.push_back(header.reserved);
+    output.push_back(header.file_des);
+    output.push_back(header.size_header);
+    output.push_back(header.img_width);
+    output.push_back(header.img_height);
+    output.push_back(header.img_plane);
+    output.push_back(profundidad);
+    output.push_back(header.img_compress);
+    output.push_back(header.img_size);
+    output.push_back(header.img_hor_res);
+    output.push_back(header.img_vert_res);
+    output.push_back(header.img_color);
+    output.push_back(header.img_color_imp);
+    return output;
+}
+
 void Image::write_img(string name){
+    vector<uchar*> head =modif_header();
     ofstream f(name);
+    f.write(reinterpret_cast<char*>(head.data()),54);
+    f.write(reinterpret_cast<char*>(pixels.data()),size);
     
 
 }
+    
 
 //=================================
 //==========Funciones para el filtro de canny
@@ -374,4 +405,8 @@ int get_number(uchar*data,int size){
     }
     return n;
     
+}
+
+uchar*data(int num,int size){
+
 }
