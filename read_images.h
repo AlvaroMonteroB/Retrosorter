@@ -259,6 +259,11 @@ vector<uchar*> Image::modif_header(){
 void Image::write_img(string name){
     vector<uchar*> head =modif_header();
     ofstream f(name);
+    if (!f.is_open())
+    {
+        cout<<"Couldnt open file\n";
+    }
+    
     f.write(reinterpret_cast<char*>(head.data()),54);
     f.write(reinterpret_cast<char*>(pixels.data()),size);
     
