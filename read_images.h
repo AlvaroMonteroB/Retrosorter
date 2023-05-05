@@ -67,6 +67,7 @@ vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int wi
 //Clase Image
 class Image{//Al final solo necesitamos los bordes
     private:
+        BMP_H header;
         vector<uchar>pixels;
         int channels;
         int step;
@@ -79,11 +80,12 @@ class Image{//Al final solo necesitamos los bordes
         void read_jpg();
         void read_png();
         void get_grey();
-        void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type);
+        void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
     public:
-        void im_read(string path);
+        void im_read(string path,bool band);
         void assign_vector(vector<uchar>input);
         Image(string name);
+        void write_img(string name);
         Image canny(float threshold1,float threshold2 );
         vector<uchar>pixel_data();
         vector<uchar> grey_vector();
@@ -122,7 +124,7 @@ Image::Image(string name){
 }
 
 
-void Image::im_read(string path){
+void Image::im_read(string path,bool band){//true=color   false = b & n 
     int optn;
     if (isBMP(path))
     {
@@ -137,6 +139,14 @@ void Image::im_read(string path){
         exit(0);
     }
     get_grey();
+    if (!band)
+    {
+        pixels=g_img;
+        step=channels=1;
+        
+    }
+    
+    
     
 }
 
@@ -147,7 +157,6 @@ void Image::read_bmp(string path){
         return;
     }
     type="bmp";
-    BMP_H header;
     F.read(reinterpret_cast<char*>(&header),sizeof(header));
     width=get_number(header.img_width,4);//Obteniendo el alto y ancho de la imagen
     height=get_number(header.img_height,4);
@@ -183,18 +192,20 @@ void Image::assign_vector(vector<uchar>input){
     pixels=input;
 }
 
-void Image::output_img(int _channel,int _step, int _widht,int _height, int _size, string _type){//Inicializar imagen de salida
+void Image::output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er){//Inicializar imagen de salida
      this->channels=_channel;
      this->step=_step;
      this->width=_widht;
      this->height=_height;
      this->size=_size;
      this->type=_type;
+     this->header=head_Er;
 }
 
 Image Image::canny(float threshold1,float threshold2){
     vector<uchar>edges;
     Image output("name");
+    output.output_img(1,1,width,height,size,type,header);
     vector<uchar>filtered=gaussian_filter(g_img,width,height,100,200);
     std::vector<std::vector<uchar>> img_2d(height, std::vector<uchar>(width));
     for (int i = 0; i < height; i++) {//i=y
@@ -219,6 +230,11 @@ vector<uchar> Image::grey_vector(){
     return g_img;
 }
 
+void Image::write_img(string name){
+    ofstream f(name);
+    
+
+}
 
 //=================================
 //==========Funciones para el filtro de canny

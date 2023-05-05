@@ -16,3 +16,7 @@ Camera_data/train_data/camara14.bmp
 Camera_data/train_data/camara15.bmp
 Camera_data/train_data/camara16.bmp
 Camera_data/train_data/camara17.bmp
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/settings.json
