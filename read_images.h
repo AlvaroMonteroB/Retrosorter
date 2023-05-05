@@ -6,6 +6,7 @@
 #include<omp.h>
 using namespace std;
 typedef unsigned char uchar;
+typedef unsigned int uint;
 
 
 //============================================================================================================
@@ -68,8 +69,8 @@ class Image{//Al final solo necesitamos los bordes
         vector<uchar>pixels;
         int channels;
         int step;
-        int width;
-        int height;
+        uint width;
+        uint height;
         int size;
         string type;
         vector<uchar>g_img;
@@ -130,8 +131,8 @@ void Image::read_bmp(string path){
     type="bmp";
     BMP_H header;
     F.read(reinterpret_cast<char*>(&header),sizeof(header));
-    width=reinterpret_cast<int>(header.img_width);//Obteniendo el alto y ancho de la imagen
-    height=reinterpret_cast<int>(header.img_height);
+    width=reinterpret_cast<uint>(header.img_width);//Obteniendo el alto y ancho de la imagen
+    height=reinterpret_cast<uint>(header.img_height);
     channels=reinterpret_cast<int>(header.img_depht);//
     size=reinterpret_cast<int>(header.img_size);
     step=reinterpret_cast<int>(header.img_depht);
