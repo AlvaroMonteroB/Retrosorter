@@ -23,7 +23,7 @@ typedef struct{
     unsigned char img_width[4];// 	Horizontal width of bitmap in pixels
     unsigned char img_height[4];// 	Vertical height of bitmap in pixels
     unsigned char img_plane[2];//Number of Planes (=1)
-    unsigned char img_depht[2];//Bits per Pixel 
+    unsigned char img_depht[2];//Bytes per Pixel 
     unsigned char img_compress[4];//Type of Compression  
     unsigned char img_size[4];//(compressed) Size of Image  
     unsigned char img_hor_res[4];//horizontal resolution: Pixels/meter
@@ -52,7 +52,7 @@ typedef struct{
 //============================================================================================================
 //======================================Prototipos de funciones===============================================
 //============================================================================================================
-
+int get_number(uchar*data,int size);
 bool isBMP(string filename);
 bool isJPG(string filename);
 bool isPNG(string filename);
@@ -131,12 +131,12 @@ void Image::read_bmp(string path){
     type="bmp";
     BMP_H header;
     F.read(reinterpret_cast<char*>(&header),sizeof(header));
-    width=stoi(reinterpret_cast<char*>(header.img_width));//Obteniendo el alto y ancho de la imagen
-    height=stoi(reinterpret_cast<char*>(header.img_height));
-    channels=reinterpret_cast<int>(header.img_depht);//
-    size=reinterpret_cast<int>(header.img_size);
-    step=reinterpret_cast<int>(header.img_depht);
-    F.seekg(reinterpret_cast<int>(header.file_des),std::ios::beg);//Posicionamos el apuntador al final del offset
+    width=get_number(header.img_width,4);//Obteniendo el alto y ancho de la imagen
+    height=get_number(header.img_height,4);
+    channels=get_number(header.img_depht,2);//
+    size=get_number(header.img_size,4);
+    step=get_number(header.img_depht,2);
+    F.seekg(get_number(header.file_des,4),std::ios::beg);//Posicionamos el apuntador al final del offset
     F.read(reinterpret_cast<char*>(pixels.data()),size);//Leemos todos los pixeles y se almacenan en un vector
    cout<<"bmp leido\n";
     
@@ -325,4 +325,14 @@ bool isPNG(string filename) {
     file.read((char*)buffer, 8);
     return (buffer[0] == 0x89 && buffer[1] == 0x50 && buffer[2] == 0x4E && buffer[3] == 0x47
         && buffer[4] == 0x0D && buffer[5] == 0x0A && buffer[6] == 0x1A && buffer[7] == 0x0A);
+}
+
+int get_number(uchar*data,int size){
+    int n=0;
+    for (int i = 0; i < size; i++)
+    {
+        n|=static_cast<int>(data[i])<<(i*8);
+    }
+    return n;
+    
 }
