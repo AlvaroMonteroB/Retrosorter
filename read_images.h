@@ -62,7 +62,6 @@ void sobel_filter(vector<vector<uchar>>img_2d,vector<float> &grad_x,vector<float
 void magnitude_direction(vector<float> grad_x,vector<float>grad_y,vector<float>&direction,vector<float>&magnitud);
 vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int width, int height, int kernel_size, double sigma);
 char* header_to_char(BMP_H header);
-uchar*data(int num,int size);//int to array of unsigned char
 
 //
 //==========================Clases
@@ -407,6 +406,3 @@ int get_number(uchar*data,int size){
     
 }
 
-uchar*data(int num,int size){
-
-}
