@@ -1,4 +1,4 @@
-#include<Windows.h>
+
 #include"read_images.h"
 #include<thread>
 #include<filesystem>

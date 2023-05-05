@@ -1,4 +1,5 @@
 #include<fstream>
+
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -84,6 +85,23 @@ class Image{//Al final solo necesitamos los bordes
         void assign_vector(vector<uchar>input);
         Image(string name);
         Image canny(float threshold1,float threshold2 );
+        vector<uchar>pixel_data();
+        vector<uchar> grey_vector();
+        int Channels(){
+            return channels;
+        }
+        int Step(){
+            return step;
+        }
+        int Width(){
+            return width;
+        }
+        int Height(){
+            return height;
+        }
+        int Size(){
+            return size;
+        }
         
         
         
@@ -118,7 +136,7 @@ void Image::im_read(string path){
         std::cout<<"Format not supported\n";
         exit(0);
     }
-
+    get_grey();
     
 }
 
@@ -177,7 +195,7 @@ void Image::output_img(int _channel,int _step, int _widht,int _height, int _size
 Image Image::canny(float threshold1,float threshold2){
     vector<uchar>edges;
     Image output("name");
-    vector<uchar>filtered=gaussian_filter(pixels,width,height,100,200);
+    vector<uchar>filtered=gaussian_filter(g_img,width,height,100,200);
     std::vector<std::vector<uchar>> img_2d(height, std::vector<uchar>(width));
     for (int i = 0; i < height; i++) {//i=y
         for (int j = 0; j < width; j++) {//j=x
@@ -193,9 +211,13 @@ Image Image::canny(float threshold1,float threshold2){
     return output;
 }
 
+vector<uchar> Image::pixel_data(){
+    return pixels;
+}
 
-
-
+vector<uchar> Image::grey_vector(){
+    return g_img;
+}
 
 
 //=================================
