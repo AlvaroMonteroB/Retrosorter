@@ -266,7 +266,7 @@ void Image::write_img(string name){
     
     f.write(reinterpret_cast<char*>(head.data()),54);
     f.write(reinterpret_cast<char*>(pixels.data()),size);
-    
+    f.close()
 
 }
     
