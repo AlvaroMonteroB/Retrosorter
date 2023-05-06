@@ -1,12 +1,13 @@
-
+﻿
 #include"read_images.h"
 #include<thread>
 #include<filesystem>
 #include<stdio.h>
+#include<iomanip>
 #include<stdlib.h>
 #include<string>
 #include<map>
-#include<omp.h>
+
 
 
 using std::vector;
@@ -14,7 +15,7 @@ using std::string;
 namespace fs=std::filesystem;
 #define PIXEL_UMBRAL 100
 typedef struct{
-        string umbral;
+		string umbral;
         string weights;
 }Operation_data;
 
@@ -39,7 +40,7 @@ typedef struct{
 //
 //==========================
 //
-
+ vector<string>train_path(string file);
 //=============================================================================================================
 //======================================================CLASES=================================================
 //=============================================================================================================
@@ -90,12 +91,6 @@ class Data{//Clase para construir el vector de pesos
 
 
 
-
-
-
-vector<Image>Read_images(string root_path);
-
-
 class Percept{
     private:
     vector<File_weight>Weight_matrix;
@@ -115,7 +110,7 @@ class Percept{
         threshold="hello";
         std::ifstream f(pair);
         int valor;
-        while(f>>std::setw(4)>>valor){
+		while(f>>std::setw(4)>>valor){
             weight.push_back(valor);
         }//Aqui se llena el primer vector de pesos
         f.close();
@@ -161,59 +156,46 @@ class Percept{
 //==================================TRAINING FUNCTION==========================================================
 //=============================================================================================================
 //Archivo de pesos y la carpeta de los datos de entrenamiento
+vector<string>train_path(string file){
+	vector<string>output;
+	ifstream f(file);
+	if(!f.is_open()){
+		exit(0);
+	}
+	string line;
+	while(getline(f,line)){
+		output.push_back(line);
+	}
+	f.close();
+	return output;
+}
+bool training(vector<string>names,string weight_file){
+	Image img("name");
+	vector<vector<uchar>>train_images;
+	for(auto &file:names){
+		img.im_read(file,false);
+		Image edge=img.canny(100,100);
+		train_images.push_back(edge.pixel_data());
+	}
+	vector<int>weight(train_images[0].size());
+	for(auto& pair:train_images){
+		for(int i=0;i<weight.size();i++){
+			if(pair[i]>PIXEL_UMBRAL){
+				weight[i]+=1;
+			}
+		}
+	ofstream f(weight_file);
+	for(auto &pair:weight){
+        f<<pair<<' ';
+	}
+	f.close();
 
-
-
-void training(string weight_neuron){//Para entrenar una sola neurona con poca información
-
-    std::string path = "../Camera_data/train_data"; // Ruta de la carpeta
-    vector<string> file_names;
-    Data weight(weight_neuron,0);
-    for (const auto& entry : fs::directory_iterator(path)) {
-        if (entry.is_regular_file()) { // Verificar si es un archivo regular
-            file_names.push_back(entry.path().string()); //aqui guardamos cada nombre del directorio
-            
-        }
-    }
-    vector<Image> images;
-    int i=0;
-    for (auto &pair:file_names)//Ahora formamos un vector con las imagenes
-    {
-        images.push_back(Image(pair));
-    }
-    for(Image &pair:images){//Convertir imagenes a vectores
-    
-    }
-    std::cout<<"Trained\n";
-    weight.Save_data("../weights/weight_data_Camera.txt");
-    return;
+	}
 }
 
-void thread_training(vector<Image>images,string train_file){//Para entrenar varias neuronas a la vez
-    Data weight("si");
-    int i=0;
-    for(Image &pair:images){//Convertir imagenes a vectores
-       
-    }
-    std::cout<<"Trained\n";
-    weight.Save_data(train_file);
-    return;
-}
 
-vector<Image>Read_images(string root_path){//Leer el directorio raiz para sacar las imagenes en el
-    vector<string>filenames;
-    for (const auto& entry : fs::directory_iterator(root_path)) {
-        if (entry.is_regular_file()) { // Verificar si es un archivo regular
-            filenames.push_back(entry.path().string()); //aqui guardamos cada nombre del directorio
-            
-        }
-    }
-    vector<Image>output;
-    for(auto &pair:filenames){
-        output.push_back(pair);
-    }
-    return output;
-}
+
+
 
 
 //==============================================================================================================
@@ -240,12 +222,3 @@ vector<Image>Read_images(string root_path){//Leer el directorio raiz para sacar 
 }   
 */
 //Conseguir los archivos para el testeo
-vector <string> testing_path(string path){
-    vector<string> file_names;
-    for (const auto& entry : fs::directory_iterator(path)) {
-        if (entry.is_regular_file()) { // Verificar si es un archivo regular
-            file_names.push_back(entry.path().string()); //aqui guardamos cada nombre del directorio
-        }
-    }
-    return file_names;
-}

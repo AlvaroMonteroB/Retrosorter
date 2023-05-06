@@ -1,10 +1,9 @@
-#include<fstream>
+﻿#include<fstream>
 
 #include<iostream>
 #include<vector>
 #include<algorithm>
 #include<cmath>
-#include<omp.h>
 using namespace std;
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -85,7 +84,7 @@ class Image{//Al final solo necesitamos los bordes
         void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
         vector<uchar*> modif_header();
     public:
-        void im_read(string path,bool band);
+		bool im_read(string path,bool band);
         void assign_vector(vector<uchar>input);
         Image(string name);
         void write_img(string name);
@@ -118,17 +117,19 @@ class Image{//Al final solo necesitamos los bordes
 Image::Image(string name){
     pixels.resize(0);
     channels=0;
-    step;
-    width;
-    height;
-    size;
-    type;
+	step=0;
+	width=0;
+	height=0;
+	size=0;
+    type="";
     g_img.resize(0);
 }
 
 
-void Image::im_read(string path,bool band){//true=color   false = b & n 
-    int optn;
+bool Image::im_read(string path,bool band){//true=color   false = b & n
+	int optn;
+	pixels.clear();
+	g_img.clear();
     if (isBMP(path))
     {
         read_bmp(path);
@@ -138,8 +139,7 @@ void Image::im_read(string path,bool band){//true=color   false = b & n
     }else if(isPNG(path)){
         optn=3;
     }else{
-        std::cout<<"Format not supported\n";
-        exit(0);
+		return false;
     }
     get_grey();
     if (!band)
@@ -147,8 +147,13 @@ void Image::im_read(string path,bool band){//true=color   false = b & n
         pixels=g_img;
         step=channels=1;
         
+	}
+	if(pixels.data()){
+	return true;
+	}else{
+		return false;
     }
-    
+
     
     
 }
@@ -156,8 +161,7 @@ void Image::im_read(string path,bool band){//true=color   false = b & n
 void Image::read_bmp(string path){
     ifstream F(path,std::ios::binary);
     if(!F.is_open()){
-        cout<<"Couldnt open file\n";
-        return;
+		return;
     }
     type="bmp";
     F.read(reinterpret_cast<char*>(&header),sizeof(header));
@@ -169,14 +173,13 @@ void Image::read_bmp(string path){
     F.seekg(get_number(header.file_des,4),std::ios::beg);//Posicionamos el apuntador al final del offset
     pixels.reserve(channels*size);
     F.read(reinterpret_cast<char*>(pixels.data()),size);//Leemos todos los pixeles y se almacenan en un vector
-   cout<<"bmp leido\n";
+
     
 }
 
 void Image::get_grey(){
     if (channels==1)
-    {
-        cout<<"La imagen ya es gris\n";
+	{
         g_img=pixels;
         return;
     }
@@ -221,8 +224,7 @@ Image Image::canny(float threshold1,float threshold2){
     vector<float>magnitud,direccion;
     magnitude_direction(gradx,grady,direccion,magnitud);
     hysteresis_thresholding(magnitud,direccion,edges,threshold1,threshold2,width,height);
-    output.assign_vector(edges);
-    cout<<"Canny vector "<<output.Size();
+	output.assign_vector(edges);
     return output;
 }
 
