@@ -1,29 +1,23 @@
 //---------------------------------------------------------------------------
 
-#ifndef Unit1H
-#define Unit1H
+#ifndef Unit2H
+#define Unit2H
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
+#include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
-class TForm1 : public TForm
+class TForm2 : public TForm
 {
 __published:	// IDE-managed Components
-	TLabel *Label1;
-	TEdit *txt_path;
-	TLabel *Label2;
-	TEdit *weight_data;
-	TButton *process;
-	TButton *Button1;
-	void __fastcall processClick(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
+	TImage *Image1;
 private:	// User declarations
 public:		// User declarations
-	__fastcall TForm1(TComponent* Owner);
+	__fastcall TForm2(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm1 *Form1;
+extern PACKAGE TForm2 *Form2;
 //---------------------------------------------------------------------------
 #endif

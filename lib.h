@@ -156,7 +156,7 @@ class Percept{
 //==================================TRAINING FUNCTION==========================================================
 //=============================================================================================================
 //Archivo de pesos y la carpeta de los datos de entrenamiento
-vector<string>train_path(string file){
+vector<string>train_path(string file){//Conseguimos todos los nombres de los archivos de entrenamiento
 	vector<string>output;
 	ifstream f(file);
 	if(!f.is_open()){
@@ -177,6 +177,10 @@ bool training(vector<string>names,string weight_file){
 		Image edge=img.canny(100,100);
 		train_images.push_back(edge.pixel_data());
 	}
+	if(!train_images.data()){
+    return false;
+	}
+
 	vector<int>weight(train_images[0].size());
 	for(auto& pair:train_images){
 		for(int i=0;i<weight.size();i++){
@@ -185,12 +189,16 @@ bool training(vector<string>names,string weight_file){
 			}
 		}
 	ofstream f(weight_file);
+	if(!f.is_open()){
+		return false;
+	}
 	for(auto &pair:weight){
         f<<pair<<' ';
 	}
 	f.close();
 
 	}
+	return true;
 }
 
 
@@ -222,3 +230,34 @@ bool training(vector<string>names,string weight_file){
 }   
 */
 //Conseguir los archivos para el testeo
+
+
+string error(int num){
+	switch(num){
+		case 1:
+		return "Formato no reconocido\n";
+		break;
+        return "No se pudo almacenar la imagen";
+		case 2:
+		break;
+
+		case 3:
+		break;
+
+		case 4:
+		break;
+
+		case 5:
+		break;
+
+		case 10:
+            return "Aqui llega";
+		break;
+
+		default:
+		return "";
+		}
+
+}
+
+

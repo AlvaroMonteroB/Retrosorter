@@ -13,23 +13,23 @@ typedef unsigned int uint;
 //=================================================Structs====================================================
 //============================================================================================================
 typedef struct{
-    //File header
-    unsigned char file_header[2];//'BM'
-    unsigned char file_size[4];// 	File size in bytes
-    unsigned char reserved[4];// 	unused (=0)
-    //Info header
-    unsigned char file_des[4];//Offset from beginning of file to the beginning of the bitmap data
-    unsigned char size_header[4];// 	Size of InfoHeader =40
-    unsigned char img_width[4];// 	Horizontal width of bitmap in pixels
-    unsigned char img_height[4];// 	Vertical height of bitmap in pixels
-    unsigned char img_plane[2];//Number of Planes (=1)
-    unsigned char img_depht[2];//Bytes per Pixel 
-    unsigned char img_compress[4];//Type of Compression  
-    unsigned char img_size[4];//(compressed) Size of Image  
-    unsigned char img_hor_res[4];//horizontal resolution: Pixels/meter
-    unsigned char img_vert_res[4];//vertical resolution: Pixels/meter
-    unsigned char img_color[4];//Number of actually used colors
-    unsigned char img_color_imp[4];// 	Number of important colors 
+	//File header
+	unsigned char file_header[2];//'BM'
+	unsigned char file_size[4];// 	File size in bytes
+	unsigned char reserved[4];// 	unused (=0)
+	//Info header
+	unsigned char file_des[4];//Offset from beginning of file to the beginning of the bitmap data
+	unsigned char size_header[4];// 	Size of InfoHeader =40
+	unsigned char img_width[4];// 	Horizontal width of bitmap in pixels
+	unsigned char img_height[4];// 	Vertical height of bitmap in pixels
+	unsigned char img_plane[2];//Number of Planes (=1)
+	unsigned char img_depht[2];//Bytes per Pixel
+	unsigned char img_compress[4];//Type of Compression
+	unsigned char img_size[4];//(compressed) Size of Image
+	unsigned char img_hor_res[4];//horizontal resolution: Pixels/meter
+	unsigned char img_vert_res[4];//vertical resolution: Pixels/meter
+	unsigned char img_color[4];//Number of actually used colors
+	unsigned char img_color_imp[4];// 	Number of important colors
 }BMP_H;//Bitmap header
 
 
@@ -84,7 +84,7 @@ class Image{//Al final solo necesitamos los bordes
         void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
         vector<uchar*> modif_header();
     public:
-		bool im_read(string path,bool band);
+		int im_read(string path,bool band);
         void assign_vector(vector<uchar>input);
         Image(string name);
         void write_img(string name);
@@ -115,43 +115,44 @@ class Image{//Al final solo necesitamos los bordes
 //Metodos de clase Image
 
 Image::Image(string name){
-    pixels.resize(0);
+	pixels.resize(0);
     channels=0;
 	step=0;
 	width=0;
 	height=0;
 	size=0;
-    type="";
+	type="";
     g_img.resize(0);
 }
 
 
-bool Image::im_read(string path,bool band){//true=color   false = b & n
+int Image::im_read(string path,bool band){//true=color   false = b & n
 	int optn;
-	pixels.clear();
+	pixels.resize(0);
 	g_img.clear();
-    if (isBMP(path))
-    {
-        read_bmp(path);
+	if (isBMP(path))
+	{
+		read_bmp(path);
 
-    }else if(isJPG(path)){
+	}else if(isJPG(path)){
         optn=2;
     }else if(isPNG(path)){
         optn=3;
     }else{
-		return false;
+		return 1;
     }
     get_grey();
     if (!band)
     {
-        pixels=g_img;
+		pixels=g_img;
+		size=size/3;
         step=channels=1;
         
 	}
 	if(pixels.data()){
-	return true;
+	return 0;
 	}else{
-		return false;
+		return 2;
     }
 
     
@@ -160,25 +161,25 @@ bool Image::im_read(string path,bool band){//true=color   false = b & n
 //exit
 void Image::read_bmp(string path){
     ifstream F(path,std::ios::binary);
-    if(!F.is_open()){
+	if(!F.is_open()){
 		return;
-    }
+	}
     type="bmp";
-    F.read(reinterpret_cast<char*>(&header),sizeof(header));
-    width=get_number(header.img_width,4);//Obteniendo el alto y ancho de la imagen
-    height=get_number(header.img_height,4);
-    channels=get_number(header.img_depht,2)/8;//
-    size=get_number(header.img_size,4);
-    step=get_number(header.img_depht,2)/8;
-    F.seekg(get_number(header.file_des,4),std::ios::beg);//Posicionamos el apuntador al final del offset
-    pixels.reserve(channels*size);
-    F.read(reinterpret_cast<char*>(pixels.data()),size);//Leemos todos los pixeles y se almacenan en un vector
+	F.read(reinterpret_cast<char*>(&header),sizeof(BMP_H));
+	width=get_number(header.img_width,4);//Obteniendo el alto y ancho de la imagen
+	height=get_number(header.img_height,4);
+	channels=get_number(header.img_depht,2)/8;//
+	size=get_number(header.img_size,4);
+	step=get_number(header.img_depht,2)/8;
+	F.seekg(get_number(header.file_des,4),std::ios::beg);//Posicionamos el apuntador al final del offset
+	pixels.resize(channels*width*height);
+	F.read(reinterpret_cast<char*>(pixels.data()),(width*height*channels));//Leemos todos los pixeles y se almacenan en un vector
+	F.close();
 
-    
 }
 
 void Image::get_grey(){
-    if (channels==1)
+	if (channels==1)
 	{
         g_img=pixels;
         return;
@@ -380,7 +381,7 @@ void hysteresis_thresholding(vector<float> magnitud, vector<float> direction, ve
 //==============================================================================================================
 //===============================================Tipo de imagen=================================================
 bool isBMP(string filename) {
-    return (filename.size() > 4 && filename.substr(filename.size() - 4) == ".bmp");
+	return (filename.size() > 4 && filename.substr(filename.size() - 4) == ".bmp");
 }
 
 bool isJPG(string filename) {
@@ -389,7 +390,8 @@ bool isJPG(string filename) {
         return false;
     }
     unsigned char buffer[2];
-    file.read((char*)buffer, 2);
+	file.read((char*)buffer, 2);
+	file.close();
     return (buffer[0] == 0xFF && buffer[1] == 0xD8);
 }
 
@@ -401,16 +403,16 @@ bool isPNG(string filename) {
     unsigned char buffer[8];
     file.read((char*)buffer, 8);
     return (buffer[0] == 0x89 && buffer[1] == 0x50 && buffer[2] == 0x4E && buffer[3] == 0x47
-        && buffer[4] == 0x0D && buffer[5] == 0x0A && buffer[6] == 0x1A && buffer[7] == 0x0A);
+		&& buffer[4] == 0x0D && buffer[5] == 0x0A && buffer[6] == 0x1A && buffer[7] == 0x0A);
 }
 
 int get_number(uchar*data,int size){
-    int n=0;
-    for (int i = 0; i < size; i++)
-    {
-        n|=static_cast<int>(data[i])<<(i*8);
-    }
-    return n;
-    
+	int n=0;
+	for (int i = 0; i < size; i++)
+	{
+		n|=static_cast<int>(data[i])<<(i*8);
+	}
+	return n;
+
 }
 
