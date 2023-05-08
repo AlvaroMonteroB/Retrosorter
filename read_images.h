@@ -83,9 +83,9 @@ class Image{//Al final solo necesitamos los bordes
         void get_grey();
         void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
         vector<uchar*> modif_header();
-    public:
+	public:
 		int im_read(string path,bool band);
-        void assign_vector(vector<uchar>input);
+		void assign_vector(vector<uchar>input,uint n_height,uint n_width, int n_channel);
         Image(string name);
         void write_img(string name);
         Image canny(float threshold1,float threshold2 );
@@ -192,11 +192,14 @@ void Image::get_grey(){
         uchar R = pixels[i+2];
         uchar prom=(B+R+G)/3;
         g_img.push_back(prom);
-    } 
+	}
 }
 
-void Image::assign_vector(vector<uchar>input){
-    pixels=input;
+void Image::assign_vector(vector<uchar>input,uint n_height,uint n_width, int n_channel){
+	pixels=input;
+	height=n_height;
+	width=n_width;
+	channels=n_channel;
 }
 
 void Image::output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er){//Inicializar imagen de salida
@@ -225,7 +228,7 @@ Image Image::canny(float threshold1,float threshold2){
     vector<float>magnitud,direccion;
     magnitude_direction(gradx,grady,direccion,magnitud);
     hysteresis_thresholding(magnitud,direccion,edges,threshold1,threshold2,width,height);
-	output.assign_vector(edges);
+	output.assign_vector(edges,height,width,1);
     return output;
 }
 

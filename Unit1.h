@@ -7,6 +7,7 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
+#include 	"lib.h"
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
@@ -22,6 +23,9 @@ __published:	// IDE-managed Components
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
+
+	vector<uchar> stretch(Image input,int _height, int _width);
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

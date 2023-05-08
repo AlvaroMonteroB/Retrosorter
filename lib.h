@@ -257,7 +257,7 @@ string error(int num){
 		default:
 		return "";
 		}
-
+return "";
 }
 
 

@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-#include"lib.h"
+
 #include <vcl.h>
 #pragma hdrstop
 
@@ -12,7 +12,7 @@ TForm1 *Form1;
 //---------------------------------------------------------------------------
 
 vector<string>filenames;
-
+  int get_bitmap(Image input,bool mode,TBitmap *output);
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
@@ -30,13 +30,8 @@ ShowMessage("Escritura de pesos a "+weight_data->Text+"\n"+"Archivos de entrenam
 
 	if(!filenames.data()){
 	ShowMessage("No se pudieron leer los nombres");
-	}else{ShowMessage("Txt leido");} /*
-	bool band=training(filenames,weight_path);
-	if(band){
-		ShowMessage("Archivo de pesos escrito");
-	}else{
-		ShowMessage("Error en el entrenamiento");
-	}*/
+	}else{ShowMessage("Txt leido");}
+
 }
 //---------------------------------------------------------------------------
  //D:\Repositorios\Inv_proj1\train_path.txt
@@ -64,21 +59,10 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 	}
 	TForm2 *newForm=new TForm2(this);
 	TBitmap *bmp=new TBitmap();
-	int height=show.Height();
-	int width=show.Width();
-	bmp->SetSize(width,height);
-	bmp->PixelFormat=pf8bit;
-	vector<uchar>vect=show.pixel_data();
-	for(int y=0; y<height;y++){
-		uchar* row=(uchar*)bmp->ScanLine[y];
-		for(int x=0;x<width;x++){//width 3024, height 4032
-			//
-			row[x]=(vect[y*width+x]);
-		}
+	get_bitmap(show,false,bmp);
 
-	}
    newForm->Image1->Picture->Assign(bmp);
-   newForm->Image1->SetBounds(0,0,width,height);
+   newForm->Image1->SetBounds(0,0,bmp->Width,bmp->Height);
    newForm->ShowModal();
 }
 //---------------------------------------------------------------------------
@@ -86,3 +70,45 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 
 //---------------------------------------------------------------------------
 
+int get_bitmap(Image input,bool mode,TBitmap *output){//true =color; false =b & n
+ int height=input.Height();
+ int width=input.Width();
+ vector<uchar>pixels=input.pixel_data();
+ if(!mode){
+  output->SetSize(width,height);
+  output->PixelFormat=pf8bit;
+	for(int y=0; y<height;y++){
+		uchar* row=(uchar*)output->ScanLine[y];
+		for(int x=0;x<width;x++){//width 3024, height 4032
+			//
+			row[x]=(pixels[y*width+x]);
+		}
+
+	}
+
+ }
+  return 0;
+}
+
+
+
+vector<uchar> stretch(Image input,int _height, int _width){//regresa una imagen redimensionada a un tamaño especifico
+if(!(input.Height()/input.Width()==_height/_width)){
+	vector<uchar>empty(0);
+	return empty;
+} //Pasar a Tbitmap
+bool mode;
+input.Channels()==1?mode=false:mode=true;
+TBitmap* img=new TBitmap();
+get_bitmap(input,mode,img);
+TBitmap*out=new TBitmap();
+out->Canvas->StretchDraw({0,0,_width,_height},img);
+vector<uchar>output;
+for(int i=0;i<_height;i++){
+	uchar* row = (uchar*)out->ScanLine[i];
+	output.insert(output.end(), row, row + _width);
+	}
+
+
+ return output;
+}
