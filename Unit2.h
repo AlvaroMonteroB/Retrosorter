@@ -12,6 +12,7 @@
 class TForm2 : public TForm
 {
 __published:	// IDE-managed Components
+	TScrollBox *ScrollBox1;
 	TImage *Image1;
 private:	// User declarations
 public:		// User declarations

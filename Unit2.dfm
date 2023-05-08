@@ -2,8 +2,8 @@ object Form2: TForm2
   Left = 0
   Top = 0
   Caption = 'Form2'
-  ClientHeight = 412
-  ClientWidth = 720
+  ClientHeight = 391
+  ClientWidth = 693
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,10 +11,18 @@ object Form2: TForm2
   Font.Name = 'Segoe UI'
   Font.Style = []
   TextHeight = 15
-  object Image1: TImage
-    Left = -32
-    Top = 1
-    Width = 1177
-    Height = 560
+  object ScrollBox1: TScrollBox
+    Left = 0
+    Top = 0
+    Width = 693
+    Height = 391
+    Align = alClient
+    TabOrder = 0
+    object Image1: TImage
+      Left = 3
+      Top = -2
+      Width = 800
+      Height = 600
+    end
   end
 end

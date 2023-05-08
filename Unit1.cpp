@@ -77,8 +77,8 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 		}
 
 	}
-
    newForm->Image1->Picture->Assign(bmp);
+   newForm->Image1->SetBounds(0,0,width,height);
    newForm->ShowModal();
 }
 //---------------------------------------------------------------------------
