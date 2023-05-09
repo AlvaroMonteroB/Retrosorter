@@ -24,7 +24,7 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
 
-	vector<uchar> stretch(Image input,int _height, int _width);
+
 
 };
 //---------------------------------------------------------------------------
