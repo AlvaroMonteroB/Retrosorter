@@ -143,7 +143,7 @@ int Image::im_read(string path,bool band){//true=color   false = b & n
     }
     get_grey();
     if (!band)
-    {
+    {   pixels.resize(0);
 		pixels=g_img;
 		size=size/3;
         step=channels=1;
@@ -216,7 +216,7 @@ Image Image::canny(float threshold1,float threshold2){
     vector<uchar>edges;
     Image output("name");
     output.output_img(1,1,width,height,size,type,header);
-    vector<uchar>filtered=gaussian_filter(g_img,width,height,100,200);
+    vector<uchar>filtered=gaussian_filter(g_img,width,height,5,1);
     std::vector<std::vector<uchar>> img_2d(height, std::vector<uchar>(width));
     for (int i = 0; i < height; i++) {//i=y
         for (int j = 0; j < width; j++) {//j=x
@@ -319,7 +319,7 @@ void sobel_filter(vector<vector<uchar>>img_2d,vector<float> &grad_x,vector<float
     int gy[3][3]={{1,2,1},{0,0,0},{-1,-2,-1}};
     for (int i = 0; i < img_2d.size()-1; i++)//i=y
     {
-        for (int j = 0; j < img_2d[0].size()-1; i++)//j=x
+        for (int j = 0; j < img_2d[0].size()-1; j++)//j=x
         {
             float sumx=0,sumy=0;
             for (int x = 0; x <=1; x++)

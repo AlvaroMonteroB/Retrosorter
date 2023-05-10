@@ -37,6 +37,7 @@ ShowMessage("Escritura de pesos a "+weight_data->Text+"\n"+"Archivos de entrenam
 //---------------------------------------------------------------------------
  //D:\Repositorios\Inv_proj1\train_path.txt
  //D:\Repositorios\Inv_proj1\weights\weight_data_Camera.txt
+ //C:\Users\diavl\OneDrive\Escritorio\Repositorios\Inv_proj1\train_path.txt
 
 //---------------------------------------------------------------------------
 
@@ -87,7 +88,7 @@ int get_bitmap(Image input,bool mode,TBitmap *output){//true =color; false =b & 
 	   pixels=input.grey_vector();
  }else if(!mode&&channels==1){
         output->SetSize(width,height);
-  output->PixelFormat=pf8bit;
+  output->PixelFormat=pf24bit;
 	for(int y=0; y<height;y++){
 		uchar* row=(uchar*)output->ScanLine[y];
 		for(int x=0;x<width;x++){//width 3024, height 4032
