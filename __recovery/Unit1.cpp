@@ -148,7 +148,7 @@ int get_bitmap(Image input,bool mode,TBitmap *output){//true =color; false =b & 
 
 
 
-vector<uchar> stretch(Image input,int _height, int _width){//regresa una imagen redimensionada a un tamaño especifico
+vector<uchar> stretch(Image input,int _height, int _width){//regresa una imagen redimensionada a un tamaÃ±o especifico
 if(!(input.Height()/input.Width()==_height/_width)){
 	vector<uchar>empty(1);
 	return empty;
@@ -169,16 +169,15 @@ TForm2 *newForm=new TForm2(NULL);
    newForm->Image1->SetBounds(0,0,out->Width,out->Height);
    newForm->ShowModal();
 
-
 vector<uchar>output(out->Width*out->Height);
 aux="channels "+to_string(input.Channels());
 ShowMessage(aux.data());
 TRGBTriple *ptr;
 if(input.Channels()==1){
 	for (int y = 0; y < out->Height; y++) {
-		ptr=reinterpret_cast<TRGBTriple*>(out->ScanLine[y]);
 		for (int x = 0; x < out->Width; x ++) {
-			output[y*out->Width+x]=ptr[x].rgbtBlue;          // b&n
+			TColor color = out->Canvas->Pixels[x][y];
+			output[y*out->Width+x]=GetRValue(color);          // b&n
 		}
 	}
 }else{

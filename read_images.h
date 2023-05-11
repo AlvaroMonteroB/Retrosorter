@@ -140,20 +140,21 @@ int Image::im_read(string path,bool band){//true=color   false = b & n
         optn=3;
     }else{
 		return 1;
-    }
-    get_grey();
-    if (!band)
-    {   pixels.resize(0);
+	}
+	if(!pixels.data()){
+			return 2;
+		}
+
+
+	get_grey();
+	if (!band)
+	{   pixels.resize(0);
 		pixels=g_img;
 		size=size/3;
-        step=channels=1;
-        
+		step=channels=1;
+
 	}
-	if(pixels.data()){
 	return 0;
-	}else{
-		return 2;
-    }
 
     
     

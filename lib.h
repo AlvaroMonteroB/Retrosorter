@@ -235,10 +235,11 @@ bool training(vector<string>names,string weight_file){
 string error(int num){
 	switch(num){
 		case 1:
-		return "Formato no reconocido\n";
+			return "Formato no reconocido\n";
 		break;
-        return "No se pudo almacenar la imagen";
+
 		case 2:
+			return "No se pudo almacenar la imagen";
 		break;
 
 		case 3:
