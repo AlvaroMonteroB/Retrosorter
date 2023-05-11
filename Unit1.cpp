@@ -57,7 +57,8 @@ ShowMessage("Escritura de pesos a "+weight_data->Text+"\n"+"Archivos de entrenam
  //C:\Users\diavl\OneDrive\Escritorio\Repositorios\Inv_proj1\train_path.txt
 
 //---------------------------------------------------------------------------
-
+//suavizado 3
+//matriz 11
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
 	if (filenames.empty()) {
@@ -80,11 +81,7 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 	TForm2 *newForm=new TForm2(this);
 	TBitmap *bmp=new TBitmap();
 	 Image *newimg=new Image("no");
-	 newimg=show->canny(400,900); //i<j para bordes negros, j<i para bordes blancos
-	get_bitmap(newimg,false,bmp);
-   newForm->Image1->Picture->Assign(bmp);
-   newForm->Image1->SetBounds(0,0,bmp->Width,bmp->Height);
-   newForm->ShowModal();
+	 newimg=show->canny(200,900); //i<j para bordes negros, j<i para bordes blancos
 	vector<uchar>x=stretch(newimg,504,378);
 	if (x.size()==0) {
 		ShowMessage("No se pudo escribir el vector");
@@ -169,8 +166,6 @@ input->Channels()==1?mode=false:mode=true;
 TBitmap* img=new TBitmap();
 get_bitmap(input,mode,img);
 TBitmap*out=new TBitmap();
-string aux=" Imagen original Width "+to_string(img->Width)+" Height "+to_string(img->Height);
-ShowMessage(aux.data());
 out->SetSize(_height,_width);
 out->Canvas->StretchDraw({0,0,_width,_height},img);
 delete img;
@@ -181,8 +176,6 @@ TForm2 *newForm=new TForm2(NULL);
    newForm->ShowModal();
 
 vector<uchar>output(out->Width*out->Height);
-aux="channels "+to_string(input->Channels());
-ShowMessage(aux.data());
 TRGBTriple *ptr;
 if(input->Channels()==1){
 	for (int y = 0; y < out->Height; y++) {

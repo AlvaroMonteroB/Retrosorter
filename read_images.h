@@ -220,7 +220,7 @@ Image *Image::canny(float threshold1,float threshold2){
     vector<uchar>edges;
 	Image *output=new Image("name");
 	output->output_img(1,1,width,height,size,type,header);
-	vector<uchar>filtered=gaussian_filter(g_img,width,height,5,1);
+	vector<uchar>filtered=gaussian_filter(g_img,width,height,11,3);
     std::vector<std::vector<uchar>> img_2d(height, std::vector<uchar>(width));
     for (int i = 0; i < height; i++) {//i=y
         for (int j = 0; j < width; j++) {//j=x
@@ -228,7 +228,8 @@ Image *Image::canny(float threshold1,float threshold2){
         }
     }
     vector<float>gradx(height*width),grady(height*width);
-    sobel_filter(img_2d,gradx,grady);
+	sobel_filter(img_2d,gradx,grady);
+	img_2d.clear();
     vector<float>magnitud,direccion;
     magnitude_direction(gradx,grady,direccion,magnitud);
 	hysteresis_thresholding(magnitud,direccion,edges,threshold1/1000,threshold2/1000,width,height);
@@ -305,8 +306,8 @@ vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int wi
     double sum = 0;
     int r = kernel_size / 2;
     for (int i = -r; i <= r; i++) {
-        for (int j = -r; j <= r; j++) {
-            double value = exp(-(i * i + j * j) / (2 * sigma * sigma));
+		for (int j = -r; j <= r; j++) {
+			double value = exp(-(i * i + j * j) / (2 * sigma * sigma));
             kernel[(i + r) * kernel_size + (j + r)] = value;
             sum += value;
         }
