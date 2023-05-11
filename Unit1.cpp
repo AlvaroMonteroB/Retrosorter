@@ -13,8 +13,8 @@ TForm1 *Form1;
 
 vector<string>filenames;
 vector<vector<uchar>>images_data;
-  int get_bitmap(Image input,bool mode,TBitmap *output);
-  vector<uchar> stretch(Image input,int _height, int _width);
+  int get_bitmap(Image *input,bool mode,TBitmap *output);
+  vector<uchar> stretch(Image *input,int _height, int _width);
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
@@ -23,9 +23,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 void __fastcall TForm1::processClick(TObject *Sender)
 {
 ShowMessage("Escritura de pesos a "+weight_data->Text+"\n"+"Archivos de entrenamiento "+txt_path->Text);
-	Image img ("Name");
-	Image aux("name");
-	Image aux2("name2");
+	Image *img=new Image ("Name");
+	Image *aux=new Image("name");
+	Image *aux2=new Image("name2");
 	System::AnsiString ansistr=txt_path->Text;//System::AnsiString.c_str()
 	string path= ansistr.c_str();//Archivo donde almacenamos las direcciones del train data
 	ansistr=weight_data->Text;
@@ -38,11 +38,17 @@ ShowMessage("Escritura de pesos a "+weight_data->Text+"\n"+"Archivos de entrenam
 	string stored=to_string(filenames.size())+" vectors stored";
 	ShowMessage(stored.data());}
 	/*for(auto &pair:filenames){
-		img.im_read(pair,false);
-		aux.assign_vector(stretch(img,504,378),504,378,1);
-		aux2=aux.canny(100,200);
-		images_data.push_back(aux2.pixel_data());
-	}   */
+		Image *img=new Image ("Name");
+		Image *aux=new Image("name");
+		Image *aux2=new Image("name2");
+		img->im_read(pair,false);
+		aux->assign_vector(stretch(img,504,378),504,378,1);
+		aux2=aux->canny(100,200);
+		images_data.push_back(aux2->pixel_data());
+		delete img;
+		delete aux;
+		delete aux2;
+	} */
 
 }
 //---------------------------------------------------------------------------
@@ -57,8 +63,8 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 	if (filenames.empty()) {
 		return;
 	}
-	Image show("Name");
-	int read= show.im_read(filenames[0],false);
+	Image *show=new Image("Name");
+	int read= show->im_read(filenames[0],false);
 	string mess;
 	string b=filenames[0];
 	ShowMessage(b.data());
@@ -73,37 +79,42 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 	}
 	TForm2 *newForm=new TForm2(this);
 	TBitmap *bmp=new TBitmap();
-
-	get_bitmap(show,false,bmp);
+	 Image *newimg=new Image("no");
+	 newimg=show->canny(100,200);
+	get_bitmap(newimg,false,bmp);
    newForm->Image1->Picture->Assign(bmp);
    newForm->Image1->SetBounds(0,0,bmp->Width,bmp->Height);
    newForm->ShowModal();
-	vector<uchar>x=stretch(show,504,378);
+	vector<uchar>x=stretch(newimg,504,378);
 	if (x.size()==0) {
 		ShowMessage("No se pudo escribir el vector");
 		exit(2);
 	}else if(x.size()==1){
 		ShowMessage("La relacion no coincide");
 	}
-	show.assign_vector(x,504,378,1);
+	show->assign_vector(x,504,378,1);
+	x.clear();
 	get_bitmap(show,false,bmp);
    newForm->Image1->Picture->Assign(bmp);
    newForm->Image1->SetBounds(0,0,bmp->Width,bmp->Height);
    newForm->ShowModal();
+   delete show;
+   delete newimg;
+   return;
 }
 //---------------------------------------------------------------------------
 
 
 //---------------------------------------------------------------------------
 
-int get_bitmap(Image input,bool mode,TBitmap *output){//true =color; false =b & n
- int height=input.Height();
- int width=input.Width();
- int channels=input.Channels();
- vector<uchar>pixels=input.pixel_data();
+int get_bitmap(Image *input,bool mode,TBitmap *output){//true =color; false =b & n
+ int height=input->Height();
+ int width=input->Width();
+ int channels=input->Channels();
+ vector<uchar>pixels=input->pixel_data();
  output->PixelFormat=pf24bit;
  if(!mode &&channels!=1){
-	   pixels=input.grey_vector();
+	   pixels=input->grey_vector();
 	   output->SetSize(width,height);
  }else if(!mode&&channels==1){
 		output->SetSize(width,height);
@@ -148,13 +159,13 @@ int get_bitmap(Image input,bool mode,TBitmap *output){//true =color; false =b & 
 
 
 
-vector<uchar> stretch(Image input,int _height, int _width){//regresa una imagen redimensionada a un tamaño especifico
-if(!(input.Height()/input.Width()==_height/_width)){
+vector<uchar> stretch(Image *input,int _height, int _width){//regresa una imagen redimensionada a un tamaño especifico
+if(!(input->Height()/input->Width()==_height/_width)){
 	vector<uchar>empty(1);
 	return empty;
 } //Pasar a Tbitmap
 bool mode;
-input.Channels()==1?mode=false:mode=true;
+input->Channels()==1?mode=false:mode=true;
 TBitmap* img=new TBitmap();
 get_bitmap(input,mode,img);
 TBitmap*out=new TBitmap();
@@ -169,16 +180,15 @@ TForm2 *newForm=new TForm2(NULL);
    newForm->Image1->SetBounds(0,0,out->Width,out->Height);
    newForm->ShowModal();
 
-
 vector<uchar>output(out->Width*out->Height);
-aux="channels "+to_string(input.Channels());
+aux="channels "+to_string(input->Channels());
 ShowMessage(aux.data());
 TRGBTriple *ptr;
-if(input.Channels()==1){
+if(input->Channels()==1){
 	for (int y = 0; y < out->Height; y++) {
-		ptr=reinterpret_cast<TRGBTriple*>(out->ScanLine[y]);
 		for (int x = 0; x < out->Width; x ++) {
-			output[y*out->Width+x]=ptr[x].rgbtBlue;          // b&n
+			TColor color = out->Canvas->Pixels[x][y];
+			output[y*out->Width+x]=GetRValue(color);          // b&n
 		}
 	}
 }else{

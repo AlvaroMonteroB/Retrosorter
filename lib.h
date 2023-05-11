@@ -170,12 +170,14 @@ vector<string>train_path(string file){//Conseguimos todos los nombres de los arc
 	return output;
 }
 bool training(vector<string>names,string weight_file){
-	Image img("name");
+	Image *img=new Image("name");
 	vector<vector<uchar>>train_images;
 	for(auto &file:names){
-		img.im_read(file,false);
-		Image edge=img.canny(100,100);
-		train_images.push_back(edge.pixel_data());
+		img->im_read(file,false);
+		Image *edge=new Image("a");
+		edge=img->canny(100,100);
+		train_images.push_back(edge->pixel_data());
+		delete edge;
 	}
 	if(!train_images.data()){
     return false;

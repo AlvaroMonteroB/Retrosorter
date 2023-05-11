@@ -67,33 +67,36 @@ char* header_to_char(BMP_H header);
 
 //Clase Image
 class Image{//Al final solo necesitamos los bordes
-    private:
-        BMP_H header;
-        vector<uchar>pixels;
-        int channels;
-        int step;
-        uint width;
-        uint height;
-        int size;
-        string type;
-        vector<uchar>g_img;
-        void read_bmp(string path);
-        void read_jpg();
-        void read_png();
-        void get_grey();
-        void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
-        vector<uchar> modif_header();
+	private:
+		BMP_H header;
+		vector<uchar>pixels;
+		int channels;
+		int step;
+		uint width;
+		uint height;
+		int size;
+		string type;
+		vector<uchar>g_img;
+		void read_bmp(string path);
+		void read_jpg();
+		void read_png();
+		void get_grey();
+		void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
+		vector<uchar> modif_header();
 	public:
+		~Image(){
+
+		}
 		int im_read(string path,bool band);
 		void assign_vector(vector<uchar>input,uint n_height,uint n_width, int n_channel);
-        Image(string name);
-        void write_img(string name);
-        Image canny(float threshold1,float threshold2 );
+		Image(string name);
+		void write_img(string name);
+		Image *canny(float threshold1,float threshold2 );
         vector<uchar>pixel_data();
-        vector<uchar> grey_vector();
-        int Channels(){
-            return channels;
-        }
+		vector<uchar> grey_vector();
+		int Channels(){
+			return channels;
+		}
         int Step(){
             return step;
         }
@@ -102,27 +105,27 @@ class Image{//Al final solo necesitamos los bordes
         }
         int Height(){
             return height;
-        }
-        int Size(){
-            return size;
-        }
-        
-        
-        
-        
+		}
+		int Size(){
+			return size;
+		}
+
+
+
+
 };
 
 //Metodos de clase Image
 
 Image::Image(string name){
 	pixels.resize(0);
-    channels=0;
+	channels=0;
 	step=0;
 	width=0;
 	height=0;
 	size=0;
 	type="";
-    g_img.resize(0);
+	g_img.resize(0);
 }
 
 
@@ -213,11 +216,11 @@ void Image::output_img(int _channel,int _step, int _widht,int _height, int _size
      this->header=head_Er;
 }
 
-Image Image::canny(float threshold1,float threshold2){
+Image *Image::canny(float threshold1,float threshold2){
     vector<uchar>edges;
-    Image output("name");
-    output.output_img(1,1,width,height,size,type,header);
-    vector<uchar>filtered=gaussian_filter(g_img,width,height,5,1);
+	Image *output=new Image("name");
+	output->output_img(1,1,width,height,size,type,header);
+	vector<uchar>filtered=gaussian_filter(g_img,width,height,5,1);
     std::vector<std::vector<uchar>> img_2d(height, std::vector<uchar>(width));
     for (int i = 0; i < height; i++) {//i=y
         for (int j = 0; j < width; j++) {//j=x
@@ -228,9 +231,14 @@ Image Image::canny(float threshold1,float threshold2){
     sobel_filter(img_2d,gradx,grady);
     vector<float>magnitud,direccion;
     magnitude_direction(gradx,grady,direccion,magnitud);
-    hysteresis_thresholding(magnitud,direccion,edges,.9,.4,width,height);
-	output.assign_vector(edges,height,width,1);
-    return output;
+	hysteresis_thresholding(magnitud,direccion,edges,(.9),(.4),width,height);
+	output->assign_vector(edges,height,width,1);
+	gradx.clear();
+	grady.clear();
+	magnitud.clear();
+	direccion.clear();
+	edges.clear();
+	return output;
 }
 
 vector<uchar> Image::pixel_data(){
