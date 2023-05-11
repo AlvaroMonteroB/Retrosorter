@@ -78,8 +78,13 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 	TForm2 *newForm=new TForm2(this);
 	TBitmap *bmp=new TBitmap();
 	 Image *newimg=new Image("no");
-	 newimg=show->canny(130,800); //i<j para bordes negros, j<i para bordes blancos
-	vector<uchar>x=stretch(newimg,504,378);
+	 get_bitmap(show,false,bmp);
+	newForm->Image1->Picture->Assign(bmp);
+   newForm->Image1->SetBounds(0,0,bmp->Width,bmp->Height);
+   newForm->ShowModal();
+	 //newimg=show->canny(160,500); //i<j para bordes negros, j<i para bordes blancos
+
+	vector<uchar>x=stretch(show,show->Height()/8,show->Width()/8);
 	if (x.size()==0) {
 		ShowMessage("No se pudo escribir el vector");
 		exit(2);
@@ -164,7 +169,7 @@ TBitmap* img=new TBitmap();
 get_bitmap(input,mode,img);
 TBitmap*out=new TBitmap();
 out->SetSize(_height,_width);
-out->Canvas->StretchDraw({0,0,_width,_height},img);
+out->Canvas->StretchDraw({_width,_height,0,0},img);
 delete img;
 
 TForm2 *newForm=new TForm2(NULL);

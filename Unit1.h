@@ -6,6 +6,9 @@
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include <filesystem>
 #include <Vcl.Forms.hpp>
 #include<System.Threading.hpp>
 #include 	"lib.h"

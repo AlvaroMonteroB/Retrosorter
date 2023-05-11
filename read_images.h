@@ -234,6 +234,9 @@ Image *Image::canny(float threshold1,float threshold2){
     vector<float>magnitud,direccion;
     magnitude_direction(gradx,grady,direccion,magnitud);
 	hysteresis_thresholding(magnitud,direccion,edges,threshold1/1000,threshold2/1000,width,height);
+	for(auto &pair:edges){
+		pair=255-pair;
+	}
 	output->assign_vector(edges,height,width,1);
 	gradx.clear();
 	grady.clear();
@@ -317,18 +320,18 @@ vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int wi
         kernel[i] /= sum;
     }
 
-    // Aplicar kernel a cada píxel de la imagen
-    for (int y = r; y < height - r; y++) {
-        for (int x = r; x < width - r; x++) {
-            double sum = 0;
-            for (int i = -r; i <= r; i++) {
-                for (int j = -r; j <= r; j++) {
-                    sum += image[(y + i) * width + (x + j)] * kernel[(i + r) * kernel_size + (j + r)];
-                }
-            }
-            filtered_image[y * width + x] = sum;
-        }
-    }
+	// Aplicar kernel a cada píxel de la imagen
+	for (int y = r; y < height - r; y++) { //int y = r; y < height - r; y++
+		for (int x = r; x < width - r; x++) {
+			double sum = 0;
+			for (int i = -r; i <= r; i++) {
+				for (int j = -r; j <= r; j++) {
+					sum += image[(y + i) * width + (x + j)] * kernel[(i + r) * kernel_size + (j + r)];
+				}
+			}
+			filtered_image[y * width + x] = sum;
+		}
+	}
 
     return filtered_image;
 }
