@@ -82,7 +82,7 @@ class Image{//Al final solo necesitamos los bordes
         void read_png();
         void get_grey();
         void output_img(int _channel,int _step, int _widht,int _height, int _size, string _type,BMP_H head_Er);
-        vector<uchar*> modif_header();
+        vector<uchar> modif_header();
 	public:
 		int im_read(string path,bool band);
 		void assign_vector(vector<uchar>input,uint n_height,uint n_width, int n_channel);
@@ -221,10 +221,10 @@ Image Image::canny(float threshold1,float threshold2){
     std::vector<std::vector<uchar>> img_2d(height, std::vector<uchar>(width));
     for (int i = 0; i < height; i++) {//i=y
         for (int j = 0; j < width; j++) {//j=x
-            img_2d[i][j] = filtered[i * height + j];
+            img_2d[i][j] = filtered[i * width + j];
         }
     }
-    vector<float>gradx,grady;
+    vector<float>gradx(height*width),grady(height*width);
     sobel_filter(img_2d,gradx,grady);
     vector<float>magnitud,direccion;
     magnitude_direction(gradx,grady,direccion,magnitud);
@@ -241,31 +241,38 @@ vector<uchar> Image::grey_vector(){
     return g_img;
 }
 
-vector<uchar*> Image::modif_header(){
-    vector<uchar*>output;
+vector<uchar> Image::modif_header() {
+    vector<uchar> output;
+
+    // Copiar los datos de los miembros de la estructura header en el vector output
+    output.insert(output.end(), header.file_header, header.file_header + 2);
+    output.insert(output.end(), header.file_size, header.file_size + 4);
+    output.insert(output.end(), header.reserved, header.reserved + 4);
+    output.insert(output.end(), header.file_des, header.file_des + 4);
+    output.insert(output.end(), header.size_header, header.size_header + 4);
+    output.insert(output.end(), header.img_width, header.img_width + 4);
+    output.insert(output.end(), header.img_height, header.img_height + 4);
+    output.insert(output.end(), header.img_plane, header.img_plane + 2);
+
+    // Copiar el arreglo profundidad
     uchar profundidad[2];
-    profundidad[0]=((channels*8)>>0)&0xff;
-    profundidad[1]=((channels*8)>>8)&0xff;
-    output.push_back(header.file_header);
-    output.push_back(header.file_size);
-    output.push_back(header.reserved);
-    output.push_back(header.file_des);
-    output.push_back(header.size_header);
-    output.push_back(header.img_width);
-    output.push_back(header.img_height);
-    output.push_back(header.img_plane);
-    output.push_back(profundidad);
-    output.push_back(header.img_compress);
-    output.push_back(header.img_size);
-    output.push_back(header.img_hor_res);
-    output.push_back(header.img_vert_res);
-    output.push_back(header.img_color);
-    output.push_back(header.img_color_imp);
+    profundidad[0] = (channels * 8) & 0xff;
+    profundidad[1] = ((channels * 8) >> 8) & 0xff;
+    output.insert(output.end(), profundidad, profundidad + 2);
+
+    output.insert(output.end(), header.img_compress, header.img_compress + 4);
+    output.insert(output.end(), header.img_size, header.img_size + 4);
+    output.insert(output.end(), header.img_hor_res, header.img_hor_res + 4);
+    output.insert(output.end(), header.img_vert_res, header.img_vert_res + 4);
+    output.insert(output.end(), header.img_color, header.img_color + 4);
+    output.insert(output.end(), header.img_color_imp, header.img_color_imp + 4);
+
     return output;
 }
 
+
 void Image::write_img(string name){
-    vector<uchar*> head =modif_header();
+    vector<uchar> head =modif_header();
     ofstream f(name);
     if (!f.is_open())
     {
@@ -282,6 +289,7 @@ void Image::write_img(string name){
 //=================================
 //==========Funciones para el filtro de canny
 vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int width, int height, int kernel_size, double sigma) {
+   cout<<"Filtro gaussiano\n";
     vector<unsigned char> filtered_image(width * height);
 
     // Crear kernel gaussiano
@@ -318,22 +326,35 @@ vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int wi
 void sobel_filter(vector<vector<uchar>>img_2d,vector<float> &grad_x,vector<float>&grad_y){
     int gx[3][3]={{-1,0,1},{-2,0,2},{-1,0,1}};
     int gy[3][3]={{1,2,1},{0,0,0},{-1,-2,-1}};
-    for (int i = 0; i < img_2d.size()-1; i++)//i=y
+    for (int i = 0; i < img_2d.size(); i++)//i=y
     {
-        for (int j = 0; j < img_2d[0].size()-1; j++)//j=x
+        for (int j = 0; j < img_2d[0].size(); j++)//j=x
         {
             float sumx=0,sumy=0;
             for (int x = 0; x <=1; x++)
             {
                 for (int y = -1; y <=1 ; y++)
-                {
-                    sumx+=gx[x+1][y+1]*img_2d[i+x][j+y];
-                    sumy+=gy[x+1][y+1]*img_2d[i+x][j+y];
+                {   if(i==img_2d.size()-1&&x>0){
+                        sumx+=gx[x+1][y+1]*img_2d[i][j+y];
+                        sumy+=gy[x+1][y+1]*img_2d[i][j+y];
+
+                        }else if(j==img_2d[0].size()-1&&y>0){
+                            sumx+=gx[x+1][y+1]*img_2d[i+x][j];
+                            sumy+=gy[x+1][y+1]*img_2d[i+x][j];
+                        }else if(j==img_2d[0].size()-1&&i==img_2d.size()-1&&x>0&&y>0){
+                            sumx+=gx[x+1][y+1]*img_2d[i][j];
+                            sumy+=gy[x+1][y+1]*img_2d[i][j];
+                        }else{
+                            sumx+=gx[x+1][y+1]*img_2d[i+x][j+y];
+                            sumy+=gy[x+1][y+1]*img_2d[i+x][j+y];
+                        }
+                    
                 }
                 
             }
-            grad_x.push_back(sumx);
-            grad_y.push_back(sumy);
+            grad_x[i*img_2d[0].size()+j]=(sumx);
+            grad_y[i*img_2d[0].size()+j]=(sumy);
+
         }
         
     }
@@ -350,6 +371,8 @@ void magnitude_direction(vector<float> grad_x,vector<float>grad_y,vector<float>&
 }
 
 void hysteresis_thresholding(vector<float> magnitud, vector<float> direction, vector<uchar>& edges, float t_high, float t_low, int width, int height) {
+    cout<<"Hsytieresis\n    ";
+    cout<<"Magnitud: "<<to_string(magnitud.size())<<" direccion: "<<to_string(direction.size());
     edges.resize(width * height);
     // Convertimos los umbrales a valores de magnitud
     float high_threshold = t_high * (*std::max_element(magnitud.begin(), magnitud.end()));
@@ -381,6 +404,7 @@ void hysteresis_thresholding(vector<float> magnitud, vector<float> direction, ve
             }
         }
     }
+    cout<<"Vector de imagen= "<<edges.size();
 }
 //==============================================================================================================
 //===============================================Tipo de imagen=================================================
