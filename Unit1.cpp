@@ -74,14 +74,11 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 	ShowMessage(mess.data());
 	exit(0);
 	return;
-	} else{
-
-	   ShowMessage("Imagen leida");
 	}
 	TForm2 *newForm=new TForm2(this);
 	TBitmap *bmp=new TBitmap();
 	 Image *newimg=new Image("no");
-	 newimg=show->canny(200,900); //i<j para bordes negros, j<i para bordes blancos
+	 newimg=show->canny(130,800); //i<j para bordes negros, j<i para bordes blancos
 	vector<uchar>x=stretch(newimg,504,378);
 	if (x.size()==0) {
 		ShowMessage("No se pudo escribir el vector");

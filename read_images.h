@@ -4,6 +4,7 @@
 #include<vector>
 #include<algorithm>
 #include<cmath>
+#include<System.Threading.hpp>
 using namespace std;
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -334,10 +335,10 @@ vector<unsigned char> gaussian_filter(const vector<unsigned char>& image, int wi
 
 void sobel_filter(vector<vector<uchar>>img_2d,vector<float> &grad_x,vector<float>&grad_y){
     int gx[3][3]={{-1,0,1},{-2,0,2},{-1,0,1}};
-    int gy[3][3]={{1,2,1},{0,0,0},{-1,-2,-1}};
-    for (int i = 0; i < img_2d.size(); i++)//i=y
-    {
-        for (int j = 0; j < img_2d[0].size(); j++)//j=x
+	int gy[3][3]={{1,2,1},{0,0,0},{-1,-2,-1}};
+	for (int i = 0; i < img_2d.size(); i++)//i=y
+	{
+		for (int j = 0; j < img_2d[0].size(); j++)//j=x
         {
             float sumx=0,sumy=0;
             for (int x = 0; x <=1; x++)
