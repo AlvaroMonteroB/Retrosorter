@@ -228,7 +228,7 @@ Image Image::canny(float threshold1,float threshold2){
     sobel_filter(img_2d,gradx,grady);
     vector<float>magnitud,direccion;
     magnitude_direction(gradx,grady,direccion,magnitud);
-    hysteresis_thresholding(magnitud,direccion,edges,threshold1,threshold2,width,height);
+    hysteresis_thresholding(magnitud,direccion,edges,.9,.4,width,height);
 	output.assign_vector(edges,height,width,1);
     return output;
 }
