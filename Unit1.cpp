@@ -80,7 +80,7 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 	TForm2 *newForm=new TForm2(this);
 	TBitmap *bmp=new TBitmap();
 	 Image *newimg=new Image("no");
-	 newimg=show->canny(100,200);
+	 newimg=show->canny(400,900); //i<j para bordes negros, j<i para bordes blancos
 	get_bitmap(newimg,false,bmp);
    newForm->Image1->Picture->Assign(bmp);
    newForm->Image1->SetBounds(0,0,bmp->Width,bmp->Height);
