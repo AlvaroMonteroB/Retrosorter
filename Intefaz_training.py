@@ -1,5 +1,6 @@
 from tkinter import *
 import image_handler as ih
+import os
 def ventana_principal():#La ventana principal tendra los botones para procesar una carpeta y escribir el txt de entrenamiento
     
     def procesar():
@@ -10,9 +11,12 @@ def ventana_principal():#La ventana principal tendra los botones para procesar u
     
     def most_img():
         path_img=casilla1.get()
-        #list_name=get_files(path_img)
+        list_name=get_files(path_img)
         img=ih.Image()
-        img.read_img("C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/Camera_data/train_data/camara1.bmp", 0)
+        img.read_img(list_name[0], 0,504,378)
+        img2=img.canny()
+        chars=img.byte
+        img.assign_vector(504, 378, chars, 1, True)
         mensaje.config(text="Imagen leida")
         img.show_image()
 
@@ -74,5 +78,11 @@ def backend_funct(root_path,train_name):#Recibimos la lista de los nombres de la
     return 0
 
 def get_files(root_path):
-    archivos=ih.os.listdir(root_path)
-    return archivos
+    archivos = os.listdir(root_path)
+    rutas_completas = []
+
+    for archivo in archivos:
+        ruta_completa = os.path.join(root_path, archivo)
+        rutas_completas.append(ruta_completa)
+
+    return rutas_completas
