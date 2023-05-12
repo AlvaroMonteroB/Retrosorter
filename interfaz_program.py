@@ -16,6 +16,7 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
         path_weight=casilla2.get()#direccion de los pesos
         path_threshold=casilla3.get()#direccion de umbrales
         weight=get_files(path_weight)
+        ventana_emergente(weight)
         thresholds=get_files(path_threshold)
         AI=nh.Percept(weight,thresholds) 
         mensaje.config(text="Ya no necesitas los pesos y los umbrales")
@@ -24,6 +25,12 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
         result=backend_process(AI,path_img)
         mensaje.config(text="Tu objeto es "+result.nombre)
 
+
+    def ventana_emergente(weight):
+        ventana_e=Toplevel()
+        ventana_e.title("Aviso")
+        etiqueta=Label(ventana_e,text=str(len(weight))+" pesos almacenados")
+        etiqueta.pack()
 
     
     def borrar_texto(event):

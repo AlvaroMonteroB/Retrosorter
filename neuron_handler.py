@@ -40,8 +40,12 @@ class Percept:
 
             f.close()
 
-    def neuron(self,input:list()):#Input tienen que ser los bytes
+    def neuron(self,input):#Input tienen que ser los bytes
         result=list()
+        input=np.frombuffer(input, dtype=np.uint8)
+        if len( not self.weight_file[0])==len(input):
+            print("Imagen invalida")
+            exit
         for aux1 in self.weight_file:#guarda el vector, su nombre y el threshold
             peso=0
             for i in range(len(aux1.vector)):
