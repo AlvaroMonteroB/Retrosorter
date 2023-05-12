@@ -58,7 +58,7 @@ class Image:
         self.height=height
         if img:
             self.imagen=np.frombuffer(self.byte, dtype=np.uint8)
-            self.imagen=np.reshape(self.imagen, (height, width, 1))
+            self.imagen=np.reshape(self.imagen, (self.height,self.width, 1))
 
 
     

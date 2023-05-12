@@ -13,35 +13,35 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
     AI=None
     def procesar():
         path_img=casilla1.get()#imagen a comparar
-        path_weight=casilla2.get()#direccion de los pesos
-        path_threshold=casilla3.get()#direccion de umbrales
+        path_weight="C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/weights"#direccion de los pesos
+        path_threshold="C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/thresholds" #direccion de umbrales
         weight=get_files(path_weight)
-        ventana_emergente(weight)
+        ventana_emergente(str(len(weight))+" pesos guardados")
         thresholds=get_files(path_threshold)
-        AI=nh.Percept(weight,thresholds) 
+        AI=nh.Percept(weight,thresholds)
+        print(str(len(AI.weight_file))) 
         mensaje.config(text="Ya no necesitas los pesos y los umbrales")
-    
+        if len(AI.weight_file)==0:
+            print("Vector de pesos vacio ")
+            exit()
              
         result=backend_process(AI,path_img)
         mensaje.config(text="Tu objeto es "+result.nombre)
 
 
-    def ventana_emergente(weight):
+    def ventana_emergente(string):
         ventana_e=Toplevel()
         ventana_e.title("Aviso")
-        etiqueta=Label(ventana_e,text=str(len(weight))+" pesos almacenados")
+        etiqueta=Label(ventana_e,text=string)
         etiqueta.pack()
 
     
     def borrar_texto(event):
         casilla1.delete(0, "end")
-    def borrar_texto2(event):
-        casilla2.delete(0,"end")
-    def borrar_texto3(event):
-        casilla3.delete(0,"end")
+
 
     ventana = Tk()
-    ventana.title("Interfaz de entrenamiento")
+    ventana.title("Interfaz de Operaciones")
     ventana.geometry("320x100")
     ventana.configure(bg="#FDF6FF")
 
@@ -51,15 +51,6 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
     casilla1.bind("<FocusIn>",borrar_texto)
     casilla1.pack()
 
-    casilla2 = Entry(ventana)
-    casilla2.insert(0, "Pesos")
-    casilla2.bind("<FocusIn>",borrar_texto2)
-    casilla2.pack()
-    
-    casilla3=Entry(ventana)
-    casilla3.insert(0,"Umbrales")
-    casilla3.bind("<FocusIn>",borrar_texto3)
-    casilla3.pack()
     
 
     # Crear botones
@@ -75,12 +66,16 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
     
     
 def backend_process(AI:nh.Percept,input):
+    print(str(len(AI.weight_file))+" LONGITUD DEL VECTOR DE PESOS")
     img=ih.Image()
     img.read_img(input,0,504,378)
     result=AI.neuron(img.byte)
     probable_result=list()
+    if len(result)==0:
+        print("Resultados vacios")
+        exit()
     for row in result:#Lista de los resultantes de la multiplicacion de matrices
-        if row.peso>row.threshold:
+        if row.peso>row.threshold:#Si el peso supera al umbral, se dispara
             probable_result.append(row)
     relaciones=list()
     for res in probable_result:

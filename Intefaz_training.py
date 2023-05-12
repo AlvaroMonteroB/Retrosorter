@@ -15,8 +15,9 @@ def ventana_principal():#La ventana principal tendra los botones para procesar u
         img=ih.Image()
         img.read_img(list_name[0], 0,504,378)
         img2=img.canny()
+        img.assign_vector(img.width, img.height, img2.byte, 1, True)
         mensaje.config(text="Imagen leida")
-        img2.show_image()
+        img.show_image()
 
     
     def borrar_texto(event):
