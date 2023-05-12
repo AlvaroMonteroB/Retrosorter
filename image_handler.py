@@ -1,25 +1,23 @@
 import cv2 as cv
-
+import os
 
 
 class Image:
     def __init__(self):
-        self.imagen#Matriz de la imagen
-        self.mode:int#Modo de lectura
-        self.byte#Bytes de la imagen
-        self.width
-        self.height
-    def read_img(self,name:str,mode:int):#Leer imagen en modo estandar
+        self.imagen=None#Matriz de la imagen
+        self.mode:int=None#Modo de lectura
+        self.byte=None#Bytes de la imagen
+        self.width=None
+        self.height=None
+    def read_img(self,name,mode:int):#Leer imagen en modo estandar
         self.imagen=cv.imread(name,mode)
-        self.height,self.width,channel=self.imagen.shape()
+        self.height,self.width=self.imagen.shape
         if mode==0:
             self.mode=1
         elif mode==1:
             self.mode=3
         self.byte=self.imagen.tobytes()
-    def read_img(self,name,mode,byte):#Leer imagen de archivo
-        imagen.cv.imread(name,mode) 
-        self.byte=self.imagen.tobytes()
+
     def assign_img(self,input):#Asignamos una nueva imagen
         self.imagen=input
         self.byte=imagen.tobytes()
