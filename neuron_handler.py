@@ -14,7 +14,7 @@ class sum_thresh:
         self.thresh=thresh
         inicio = file.rfind("/") + 1
         fin = file.rfind(".")
-        parte_deseada = direccion[inicio:fin]
+        parte_deseada = file[inicio:fin]
         self.name=parte_deseada
 
 
@@ -28,14 +28,14 @@ class Percept:
                 weight = [int(num) for num in numbers]#Calculamos el arreglo de pesos
                 inicio = file.rfind("/") + 1
                 fin = file.rfind(".")
-                parte_deseada = direccion[inicio:fin]
+                parte_deseada = file[inicio:fin]
                 for thresh in thresholds:#Vemos entre los thresholds cual es el que vamos a usar
                  if parte_deseada in thresh:#Si el nombre de nuestro archivo de pesos comparte una cadena con el threshold, lo usamos
                     with open(thresh,'r') as s:
                         line= s.readline()
                         line = line.rstrip('\n')
                         thr=int(line)
-                        weight_file.append(file_weight(weight, file,line))
+                        self.weight_file.append(file_weight(weight, file,line))
                         break
 
             f.close()
