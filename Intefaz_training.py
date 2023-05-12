@@ -28,7 +28,7 @@ def ventana_principal():#La ventana principal tendra los botones para procesar u
 
     ventana = Tk()
     ventana.title("Interfaz de entrenamiento")
-    ventana.geometry("600x400")
+    ventana.geometry("320x100")
     ventana.configure(bg="#FDF6FF")
 
 
