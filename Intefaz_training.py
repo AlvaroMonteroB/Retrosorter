@@ -15,10 +15,8 @@ def ventana_principal():#La ventana principal tendra los botones para procesar u
         img=ih.Image()
         img.read_img(list_name[0], 0,504,378)
         img2=img.canny()
-        chars=img.byte
-        img.assign_vector(504, 378, chars, 1, True)
         mensaje.config(text="Imagen leida")
-        img.show_image()
+        img2.show_image()
 
     
     def borrar_texto(event):
@@ -61,11 +59,12 @@ def backend_funct(root_path,train_name):#Recibimos la lista de los nombres de la
     Data=ih.Image()
     
     list_name=get_files(root_path)
-    Data.read_img(list_name, 0, byte)
+    Data.read_img(list_name[0], 0,504,378)
     weight=[0]*(Data.height*Data.width*Data.mode)
     for name in list_name:#Escribiendo el vector de pesos
-        Data.read_img(name, 0, byte)
-        bytess=Data.byte
+        Data.read_img(name, 0,504,378)
+        aux=Data.canny()
+        bytess=aux.byte
         for i,byte in enumerate(bytess):
             if byte==255:
                 weight[i]+=1
