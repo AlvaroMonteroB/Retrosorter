@@ -23,9 +23,13 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
         if len(AI.weight_file)==0:
             print("Vector de pesos vacio ")
             exit()
-             
-        result=backend_process(AI,path_img)
-        mensaje.config(text="Tu objeto es "+result.nombre)
+        bandera=0
+        result=backend_process(AI,path_img,bandera)
+        if bandera>0 or result==None:
+            mensaje.config(text="No se encontro al objeto dentro de la clasificacion")
+            return
+        else:
+            mensaje.config(text="Tu objeto es "+result.nombre)
 
 
     def ventana_emergente(string):
@@ -64,8 +68,7 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
     
     
     
-def backend_process(AI:nh.Percept,input):
-    print(str(len(AI.weight_file))+" LONGITUD DEL VECTOR DE PESOS")
+def backend_process(AI:nh.Percept,input,bandera):
     img=ih.Image()
     img.read_img(input,0,504,378)
     result=AI.neuron(img.byte)#result list->SUM_THRESH// sum,thresh, name
@@ -77,12 +80,18 @@ def backend_process(AI:nh.Percept,input):
         if cell.sum>cell.thresh:#Si el peso supera al umbral, se dispara
             probable_result.append(cell)
         else:
-            print("El umbral es "+str(cell.thresh))
-    relaciones=list()
-    for res in probable_result:
-      a=(100/res.threshold)*res.peso
-      relaciones.append(result(res.name,a))
-    return max(relaciones,key=lambda obj:result.relacion)
+            print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum))
+            continue
+        
+    if len(probable_result)==0:#Si no hay resultados probables ponemos en 1 la bandera de errores
+        bandera=1
+        return None
+    elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista
+        relaciones=list()
+        for res in probable_result:
+            a=(100/res.threshold)*res.peso
+            relaciones.append(result(res.name,a))       
+        return max(relaciones,key=lambda obj:result.relacion)
       
 
             
