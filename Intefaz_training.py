@@ -83,6 +83,7 @@ def get_files(root_path):
 
     for archivo in archivos:
         ruta_completa = os.path.join(root_path, archivo)
-        rutas_completas.append(ruta_completa)
+        if os.path.isfile(ruta_completa):
+            rutas_completas.append(ruta_completa)
 
     return rutas_completas
