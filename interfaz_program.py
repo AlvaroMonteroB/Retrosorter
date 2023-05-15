@@ -13,14 +13,13 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
     AI=None
     def procesar():
         path_img=casilla1.get()#imagen a comparar
-        path_weight="C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/weights"#direccion de los pesos
-        path_threshold="C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/thresholds" #direccion de umbrales
-        weight=get_files(path_weight)
+        path_weight="D:\Repositorios\Inv_proj1\weights"#direccion de los pesos     //D:\Repositorios\Inv_proj1\weights  //C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/weights
+        path_threshold="D:/Repositorios/Inv_proj1/thresholds" #direccion de umbrales
+        weight=get_files(path_weight)#Guardamos las direcciones completas de todos los archivos de pesos
         ventana_emergente(str(len(weight))+" pesos guardados")
-        thresholds=get_files(path_threshold)
+        thresholds=get_files(path_threshold)#Direcciones completas de los archivos de umbral
         AI=nh.Percept(weight,thresholds)
         print(str(len(AI.weight_file))) 
-        mensaje.config(text="Ya no necesitas los pesos y los umbrales")
         if len(AI.weight_file)==0:
             print("Vector de pesos vacio ")
             exit()
@@ -69,14 +68,16 @@ def backend_process(AI:nh.Percept,input):
     print(str(len(AI.weight_file))+" LONGITUD DEL VECTOR DE PESOS")
     img=ih.Image()
     img.read_img(input,0,504,378)
-    result=AI.neuron(img.byte)
+    result=AI.neuron(img.byte)#result list->SUM_THRESH// sum,thresh, name
     probable_result=list()
     if len(result)==0:
         print("Resultados vacios")
         exit()
-    for row in result:#Lista de los resultantes de la multiplicacion de matrices
-        if row.peso>row.threshold:#Si el peso supera al umbral, se dispara
-            probable_result.append(row)
+    for cell in result:#Lista de los resultantes de la multiplicacion de matrices
+        if cell.sum>cell.thresh:#Si el peso supera al umbral, se dispara
+            probable_result.append(cell)
+        else:
+            print("El umbral es "+str(cell.thresh))
     relaciones=list()
     for res in probable_result:
       a=(100/res.threshold)*res.peso
