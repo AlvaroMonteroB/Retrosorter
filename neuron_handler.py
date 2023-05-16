@@ -65,7 +65,22 @@ class Percept:
             for i in range(len(aux1.vector)):
                 peso+=aux1.vector[i]*buffer[i]
             result.append(sum_thresh(peso, aux1.threshold,aux1.name ))
-        return result
+            probable_result=list()
+        for cell in result:#Lista de los resultantes de la multiplicacion de matrices
+            if cell.sum>cell.thresh:#Si el peso supera al umbral, se dispara
+                probable_result.append(cell)
+            else:
+                print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum))
+                continue
+        if len(probable_result)==0:
+            return None
+        elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista
+            relaciones=list()
+            for res in probable_result:
+                a=(100/res.threshold)*res.peso
+                relaciones.append(result(res.name,a))       
+            self.output= max(relaciones,key=lambda obj:result.relacion)
+            return self.output
     
     
     def convolution_neuron(files, object:ih.Image,thresh_files):#Path de donde esté la carpeta de caracteristicas y imagen del objeto

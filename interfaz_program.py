@@ -70,26 +70,7 @@ def backend_process(AI:nh.Percept,input,bandera):
     img=ih.Image()
     img.read_img(input,0,504,378)
     result=AI.neuron(img.byte)#result list->SUM_THRESH// sum,thresh, name
-    probable_result=list()
-    if len(result)==0:
-        print("Resultados vacios")
-        exit()
-    for cell in result:#Lista de los resultantes de la multiplicacion de matrices
-        if cell.sum>cell.thresh:#Si el peso supera al umbral, se dispara
-            probable_result.append(cell)
-        else:
-            print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum))
-            continue
-        
-    if len(probable_result)==0:#Si no hay resultados probables ponemos en 1 la bandera de errores
-        bandera=1
-        return None
-    elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista
-        relaciones=list()
-        for res in probable_result:
-            a=(100/res.threshold)*res.peso
-            relaciones.append(result(res.name,a))       
-        return max(relaciones,key=lambda obj:result.relacion)
+    return result
       
 
 def convolution_process(resultado:result,path):#Va a ser una matriz de convolucion que recorra la imagen para encontrar caracteristicas
