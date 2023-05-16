@@ -20,9 +20,6 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
         thresholds=get_files(path_threshold)#Direcciones completas de los archivos de umbral
         AI=nh.Percept(weight,thresholds)
         print(str(len(AI.weight_file))) 
-        if len(AI.weight_file)==0:
-            print("Vector de pesos vacio ")
-            exit()
         bandera=0
         result=backend_process(AI,path_img,bandera)
         if bandera>0 or result==None:
@@ -30,6 +27,7 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
             return
         else:
             mensaje.config(text="Tu objeto es "+result.nombre)
+        
 
 
     def ventana_emergente(string):
@@ -94,7 +92,12 @@ def backend_process(AI:nh.Percept,input,bandera):
         return max(relaciones,key=lambda obj:result.relacion)
       
 
-            
+def convolution_process(resultado:result,path):#Va a ser una matriz de convolucion que recorra la imagen para encontrar caracteristicas
+    folders=get_folder(path)
+    for folder in folders:#Buscamos en el folder del objeto que se reconocio para obtener los pesos de las marcas
+        files=get_files(folder)
+        
+                
     
     
 def get_files(root_path):
@@ -107,3 +110,14 @@ def get_files(root_path):
             rutas_completas.append(ruta_completa)
 
     return rutas_completas
+
+def get_folder(root_path):
+    archivos = os.listdir(root_path)
+    carpetas = []
+
+    for archivo in archivos:
+        ruta_completa = os.path.join(root_path, archivo)
+        if os.path.isdir(ruta_completa):
+            carpetas.append(archivo)
+
+    return carpetas

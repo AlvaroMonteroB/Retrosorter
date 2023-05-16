@@ -19,6 +19,13 @@ class sum_thresh:
         fin = file.rfind(".")
         parte_deseada = file[inicio:fin]
         self.name=parte_deseada
+        
+class convolution_filter():
+    def __init__(self,height,width,filter:np.array,threshold) -> None:
+        self.height=height
+        self.width=width
+        self.filter=filter
+        self.threshold=threshold
 
 
 class Percept:
@@ -59,5 +66,60 @@ class Percept:
                 peso+=aux1.vector[i]*buffer[i]
             result.append(sum_thresh(peso, aux1.threshold,aux1.name ))
         return result
+    
+    
+    def convolution_neuron(files, object:ih.Image,thresh_files):#Path de donde esté la carpeta de caracteristicas y imagen del objeto
+        filters=list
+        for filter_f in files:#Vamos a iterar en los archivos de filtro convolucional
+            
+            with open(filter_f,'r') as conv:
+                line=conv.readline()#Esta linea lee las caracteristicas basicas, altura y anchura del filtro
+                numbers = line.split()
+                features = [int(num) for num in numbers]#Guardamos el height y el width
+                
+                buffer=conv.read()
+                buffer1=buffer.split()
+                mat=[int(num) for num in buffer1]
+                mat_np=np.array(mat)#Leemos el buffer y almacenamos todo como numpy array
+                
+                for threshold in thresh_files:
+                    aux=os.path.basename(threshold)
+                    print("Umbral "+aux+"\n")
+                    fin = threshold.rfind(".")
+                    parte_deseada = aux[0:fin]
+                    
+                    if parte_deseada in filter_f:
+                        
+                        with open(threshold,'r') as s:  
+                            line= s.readline()
+                            line = line.rstrip('\n')
+                            thr=int(line)
+                            s.close()   
+                        filters.append(convolution_filter(features[0],features[1],mat_np.reshape(features[0],features[1]),thr))#Almacenamos sus dimensiones y la matriz
+                        break
+                conv.close()
+        image = object.imagen
+        for matrix in filters:#Matrix es la caracteristica a convolucionar, tiene height y width, y la matriz de convolucion en si
+            pixels=matrix.filter
+            r1=int(matrix.height//2)
+            r2=int(matrix.weight//2)
 
-        
+            for y in range(r1,object.height-r1):
+                
+                for x in range(r2,object.width-r2):#Estos 2 calculan el centro de la matriz de convolucion
+                    sum=0
+                    for i in range(-r1,r1):
+                        
+                        for j in range(-r2,r2):#Se mueve en las 2 direcciones del filtro
+                           sum+=  image[x+j,y+i]*matrix.filter[j,i]
+                if sum>matrix.threshold:
+                    break    
+
+                
+
+
+
+
+
+
+
