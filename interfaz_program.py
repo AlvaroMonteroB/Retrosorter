@@ -102,3 +102,9 @@ def get_folder(root_path):
             carpetas.append(archivo)
 
     return carpetas
+
+
+
+switch_carpetas={#Es para la convolucion
+
+}
