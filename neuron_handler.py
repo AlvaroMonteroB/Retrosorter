@@ -3,6 +3,11 @@ import numpy as np
 import copy
 import os
 
+class result:
+    def __init__(self,nombre,relacion) -> None:
+        self.nombre=nombre
+        self.relacion=relacion
+
 class file_weight:
     def __init__(self,vector:list(),name,threshold:int):
         self.vector=vector
@@ -55,7 +60,7 @@ class Percept:
             
 
     def neuron(self,input):#Input tienen que ser los bytes
-        result=list()
+        resultado=list()
         buffer=np.frombuffer(input, dtype=np.uint8)
         if not len(self.weight_file[0].vector)==len(buffer):
             print("Imagen invalida")
@@ -64,9 +69,9 @@ class Percept:
             peso=0
             for i in range(len(aux1.vector)):
                 peso+=aux1.vector[i]*buffer[i]
-            result.append(sum_thresh(peso, aux1.threshold,aux1.name ))
+            resultado.append(sum_thresh(peso, aux1.threshold,aux1.name ))
             probable_result=list()
-        for cell in result:#Lista de los resultantes de la multiplicacion de matrices
+        for cell in resultado:#Lista de los resultantes de la multiplicacion de matrices
             if cell.sum>cell.thresh:#Si el peso supera al umbral, se dispara
                 probable_result.append(cell)
             else:
@@ -77,9 +82,9 @@ class Percept:
         elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista
             relaciones=list()
             for res in probable_result:
-                a=(100/res.threshold)*res.peso
+                a:double=(100/res.thresh)*res.sum
                 relaciones.append(result(res.name,a))       
-            self.output= max(relaciones,key=lambda obj:result.relacion)
+            self.output= max(relaciones,key=lambda obj:obj.relacion)
             return self.output
     
     

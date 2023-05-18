@@ -3,10 +3,7 @@ import image_handler as ih
 import neuron_handler as nh
 import os
 
-class result:
-    def __init__(self,nombre,relacion) -> None:
-        self.nombre=nombre
-        self.relacion=relacion
+
 
 
 def ventana_principal(counter):#La ventana principal tendra los botones para procesar una carpeta y escribir el txt de entrenamiento
@@ -21,20 +18,18 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
         AI=nh.Percept(weight,thresholds)
         print(str(len(AI.weight_file))) 
         bandera=0
-        result=backend_process(AI,path_img,bandera)
+        image=ih.Image()
+        result=backend_process(AI,path_img,bandera,image)
         if bandera>0 or result==None:
             mensaje.config(text="No se encontro al objeto dentro de la clasificacion")
-            mat=ih.cv.imread(path_img)
-            ih.cv.imshow("Imagen",mat)
-            ih.cv.waitKey(0)
-            ih.cv.destroyAllWindows()
+            image.show_image()
             return
         else:
-            mensaje.config(text="Tu objeto es "+result.nombre)
-            mat=ih.cv.imread(path_img)
-            ih.cv.imshow("Imagen",mat)
-            ih.cv.waitKey(0)
-            ih.cv.destroyAllWindows()
+            inicio=result.nombre.rfind("_")
+            aux=result.nombre[inicio+1:]
+            mensaje.config(text="Tu objeto es "+aux)
+            image.show_image()
+
             
         
 
@@ -75,14 +70,13 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
     
     
     
-def backend_process(AI:nh.Percept,input,bandera):
-    img=ih.Image()
+def backend_process(AI:nh.Percept,input,bandera,img:ih.Image()):
     img.read_img(input,0,504,378)
     result=AI.neuron(img.byte)#result list->SUM_THRESH// sum,thresh, name
     return result
       
 
-def convolution_process(resultado:result,path):#Va a ser una matriz de convolucion que recorra la imagen para encontrar caracteristicas
+def convolution_process(resultado:nh.result,path):#Va a ser una matriz de convolucion que recorra la imagen para encontrar caracteristicas
     folders=get_folder(path)
     for folder in folders:#Buscamos en el folder del objeto que se reconocio para obtener los pesos de las marcas
         files=get_files(folder)
