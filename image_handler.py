@@ -63,9 +63,9 @@ class Image:
 
     
 
-    def canny(self):#Algoritmo de canny
+    def canny(self,thr1,thr2):#Algoritmo de canny
         output=Image()
-        borde=cv.Canny(self.imagen,160,600)
+        borde=cv.Canny(self.imagen,thr1,thr2)
         output.assign_img(borde)
         return output
         

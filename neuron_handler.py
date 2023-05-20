@@ -9,15 +9,17 @@ class result:
         self.relacion=relacion
 
 class file_weight:
-    def __init__(self,vector:list(),name,threshold:int):
+    def __init__(self,vector:list(),name,threshold:int,threshold2:int):
         self.vector=vector
         self.name=name
         self.threshold=threshold
+        self.threshold2=threshold2
 
 class sum_thresh:
-    def __init__(self,sum,thresh,file):
+    def __init__(self,sum,thresh,sup_thresh,file):
         self.sum=sum
         self.thresh=thresh
+        self.thresh2=sup_thresh
         inicio = file.rfind("/") + 1
         if inicio==0:
             inicio = file.rfind("\\") + 1
@@ -26,11 +28,12 @@ class sum_thresh:
         self.name=parte_deseada
         
 class convolution_filter():
-    def __init__(self,height,width,filter:np.array,threshold) -> None:
+    def __init__(self,height,width,filter:np.array,threshold1,threshold2) -> None:
         self.height=height
         self.width=width
         self.filter=filter
-        self.threshold=threshold
+        self.threshold=threshold1
+        self.threshold2=threshold2
 
 
 class Percept:
@@ -53,7 +56,10 @@ class Percept:
                         line= s.readline()
                         line = line.rstrip('\n')
                         thr=int(line)
-                        self.weight_file.append(file_weight(weight, os.path.basename(file),thr))#Ahora guaramos el vector de pesos, el nombre del archivo y el threshold
+                        line2=s.readline()
+                        line2=line2.rstrip('\n')
+                        thr2=int(line2)
+                        self.weight_file.append(file_weight(weight, os.path.basename(file),thr,thr2))#Ahora guaramos el vector de pesos, el nombre del archivo y el threshold
                         s.close()
                         break
 
@@ -69,20 +75,21 @@ class Percept:
             peso=0
             for i in range(len(aux1.vector)):
                 peso+=aux1.vector[i]*buffer[i]
-            resultado.append(sum_thresh(peso, aux1.threshold,aux1.name ))
+            resultado.append(sum_thresh(peso, aux1.threshold,aux1.threshold2,aux1.name ))
             probable_result=list()
         for cell in resultado:#Lista de los resultantes de la multiplicacion de matrices
-            if cell.sum>cell.thresh:#Si el peso supera al umbral, se dispara
+            if cell.thresh2>=cell.sum>cell.thresh:#Si el peso supera al umbral, y está debajo de otro umbral, se dispara
                 probable_result.append(cell)
+                print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum)+" en "+str(cell.name))
             else:
-                print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum))
+                print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum)+" en "+str(cell.name))
                 continue
         if len(probable_result)==0:
             return None
         elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista
             relaciones=list()
             for res in probable_result:
-                a:double=(100/res.thresh)*res.sum
+                a:float=(100/res.thresh)*res.sum
                 relaciones.append(result(res.name,a))       
             self.output= max(relaciones,key=lambda obj:obj.relacion)
             return self.output

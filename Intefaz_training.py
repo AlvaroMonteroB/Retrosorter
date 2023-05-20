@@ -61,10 +61,10 @@ def backend_funct(root_path,train_name):#Recibimos la lista de los nombres de la
     
     list_name=get_files(root_path)
     Data.read_img(list_name[0], 0,504,378)
-    weight=[0]*(Data.height*Data.width*Data.mode)
+    weight=[0]*(504*378*Data.mode)
     for name in list_name:#Escribiendo el vector de pesos
         Data.read_img(name, 0,504,378)
-        aux=Data.canny()
+        aux=Data.canny(100 ,300)
         bytess=aux.byte
         for i,byte in enumerate(bytess):
             if byte==255:
