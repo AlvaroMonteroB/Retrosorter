@@ -2,6 +2,8 @@ import image_handler as ih
 import numpy as np
 import copy
 import os
+import math
+
 
 class result:
     def __init__(self,nombre,relacion) -> None:
@@ -88,8 +90,8 @@ class Percept:
             return None
         elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista
             relaciones=list()
-            for res in probable_result:
-                a:float=(100/res.thresh)*res.sum
+            for res in probable_result:#objeto tipo sum_thresh
+                a:float=switch_thresh_funct[res.name](res)#Vamos a cambiarlo por la 
                 relaciones.append(result(res.name,a))       
             self.output= max(relaciones,key=lambda obj:obj.relacion)
             return self.output
@@ -141,6 +143,34 @@ class Percept:
                            sum+=  image[x+j,y+i]*matrix.filter[j,i]
                 if sum>matrix.threshold:
                     break    
+
+
+
+def cam_funct(obj:sum_thresh):
+    x=obj.sum
+    prom=2530722#El primedio nos da el punto donde la derivada es 0 o donde los valores son "ideales"
+    xf=obj.thresh2#Obtenemos un rango, marcado por este limite superior
+    x0=obj.thresh#Y este limite inferior
+    b=xf-x0#wavelenght
+    k=2*math.pi/b
+    phase_shift=(prom/b)*2*math.pi
+    return 50+50*math.sin(k*x+phase_shift)
+
+def ps2_funct(obj:sum_thresh):
+    x=obj.sum
+ 
+    
+
+
+
+
+
+switch_thresh_funct={
+    "Camera":cam_funct,
+    "ps2":ps2_funct
+    
+}
+
 
                 
 
