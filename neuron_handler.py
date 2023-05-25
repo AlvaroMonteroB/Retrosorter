@@ -91,7 +91,7 @@ class Percept:
         elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista
             relaciones=list()
             for res in probable_result:#objeto tipo sum_thresh
-                a:float=switch_thresh_funct[res.name](res)#Vamos a cambiarlo por la 
+                a:float=mat_funct(res)#Vamos a cambiarlo por la 
                 relaciones.append(result(res.name,a))       
             self.output= max(relaciones,key=lambda obj:obj.relacion)
             return self.output
@@ -146,7 +146,7 @@ class Percept:
 
 
 
-def cam_funct(obj:sum_thresh):
+def mat_funct(obj:sum_thresh):
     x=obj.sum
     prom=switch_prom[obj.name]#El primedio nos da el punto donde la derivada es 0 o donde los valores son "ideales"
     xf=obj.thresh2#Obtenemos un rango, marcado por este limite superior
