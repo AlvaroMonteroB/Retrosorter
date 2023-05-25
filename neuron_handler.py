@@ -169,7 +169,6 @@ switch_prom={
     "ps2":1000000,
     "gameboy":1200000,
     "gamecube":1500000
-    
 }
 
 
