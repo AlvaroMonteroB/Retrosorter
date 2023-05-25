@@ -148,7 +148,7 @@ class Percept:
 
 def cam_funct(obj:sum_thresh):
     x=obj.sum
-    prom=2530722#El primedio nos da el punto donde la derivada es 0 o donde los valores son "ideales"
+    prom=switch_prom[obj.name]#El primedio nos da el punto donde la derivada es 0 o donde los valores son "ideales"
     xf=obj.thresh2#Obtenemos un rango, marcado por este limite superior
     x0=obj.thresh#Y este limite inferior
     b=xf-x0#wavelenght
@@ -156,8 +156,7 @@ def cam_funct(obj:sum_thresh):
     phase_shift=(prom/b)*2*math.pi
     return 50+50*math.sin(k*x+phase_shift)
 
-def ps2_funct(obj:sum_thresh):
-    x=obj.sum
+
  
     
 
@@ -165,14 +164,15 @@ def ps2_funct(obj:sum_thresh):
 
 
 
-switch_thresh_funct={
-    "Camera":cam_funct,
-    "ps2":ps2_funct
+switch_prom={
+    "Camera":2830000,
+    "ps2":1000000
     
 }
 
 
                 
+
 
 
 
