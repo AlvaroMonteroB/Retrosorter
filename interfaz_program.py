@@ -2,6 +2,7 @@ from tkinter import *
 import image_handler as ih
 import neuron_handler as nh
 import os
+import database_handler as dh
 
 
 
@@ -82,7 +83,13 @@ def convolution_process(resultado:nh.result,path):#Va a ser una matriz de convol
     for folder in folders:#Buscamos en el folder del objeto que se reconocio para obtener los pesos de las marcas
         files=get_files(folder)
         
-                
+def database_process(name):
+    path=""
+    files=get_files(path)
+    for archivo in files:
+        if name in archivo:
+            dh.database(archivo)
+            break
     
     
 def get_files(root_path):
