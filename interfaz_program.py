@@ -30,7 +30,9 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
             aux=result.nombre[inicio+1:]
             mensaje.config(text="Tu objeto es "+aux)
             image.show_image()
-        database_process(aux)
+        info_obj=database_process(aux)
+        mensaje.config(text=info_obj)
+
 
             
         
@@ -91,9 +93,9 @@ def database_process(name):
     #    if name in archivo:
     #        dh.database(archivo)
     #        break
-    dh.database("C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt") #C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt
-    
-    
+    base=dh.database("C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt") #C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt
+    row=base.get_row_by_name(name, 0)
+    return "Tu objeto es "+row[0]+"que "+row[1]+" ,"+row[2]+" y "+row[3]
 def get_files(root_path):
     archivos = os.listdir(root_path)
     rutas_completas = []
