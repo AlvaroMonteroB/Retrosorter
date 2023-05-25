@@ -1,5 +1,10 @@
 import csv
 
+#Estructura de primer csv
+#Nombre del objeto, breve descripcion, con que funciona, fuente de alimentacion si es requerida, 
+
+
+
 
 class database:
     def __init__(self,path):
@@ -54,9 +59,8 @@ class database:
                         return output
                 else:
                     continue
-
-        if len(output)==0:
             return None
+       
                 
 
 

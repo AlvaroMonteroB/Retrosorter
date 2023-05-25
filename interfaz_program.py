@@ -30,6 +30,7 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
             aux=result.nombre[inicio+1:]
             mensaje.config(text="Tu objeto es "+aux)
             image.show_image()
+        database_process(aux)
 
             
         
@@ -85,11 +86,12 @@ def convolution_process(resultado:nh.result,path):#Va a ser una matriz de convol
         
 def database_process(name):
     path=""
-    files=get_files(path)
-    for archivo in files:
-        if name in archivo:
-            dh.database(archivo)
-            break
+    #files=get_files(path)
+    #for archivo in files:
+    #    if name in archivo:
+    #        dh.database(archivo)
+    #        break
+    dh.database("C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt") #C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt
     
     
 def get_files(root_path):
