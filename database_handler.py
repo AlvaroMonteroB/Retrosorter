@@ -12,6 +12,7 @@ class database:
             self.data=list(csv.reader(f))
         self.campos=len((self.archivo[0]))#Numero de columnas
         self.pattern=len(list(self.archivo))#numero de filas
+        self.auto_set()
     
     
     def auto_set(self):
