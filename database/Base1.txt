@@ -2,3 +2,4 @@ Camera,Camara p&s analogica,Usa rollos 35mm, dependiendo el modelo usa pilas sol
 gameboy,Consola portatil gameboy, Usa cartuchos de gameboy,Requiere 2 pilas AA en los primeros modelos, posteriormente requiere cargador
 gamecube, Consola de sobremesa gamecube, Usa minidiscos especiales, debe incluir un adaptador de corriente
 vhs, Reproductor de video en formato vhs, usa cassettes, debe incluir adaptador de corriente
+ps1,Consola de sobremesa Playstation 1, usa CD-ROM como formato de juegos, debe incluir adaptador de corriente
