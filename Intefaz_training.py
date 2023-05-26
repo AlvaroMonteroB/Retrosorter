@@ -14,7 +14,7 @@ def ventana_principal():#La ventana principal tendra los botones para procesar u
         list_name=get_files(path_img)
         img=ih.Image()
         img.read_img(list_name[0], 0,504,378)
-        img2=img.canny()
+        img2=img.canny(100,300)
         img.assign_vector(img.width, img.height, img2.byte, 1, True)
         mensaje.config(text="Imagen leida")
         img.show_image()
