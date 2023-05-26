@@ -165,10 +165,12 @@ def mat_funct(obj:sum_thresh):
 
 
 switch_prom={
-    "Camera":2830000,
-    "ps2":1000000,
-    "gameboy":1200000,
-    "gamecube":1500000
+    "weight_data_Camera":2147916,
+    "weight_data_ps2":1000000,
+    "weight_data_gameboy":1694772.5,
+    "weight_data_gamecube":1390961.25,
+    "weight_data_ps1":421310
+
 }
 
 

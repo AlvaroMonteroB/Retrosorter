@@ -14,7 +14,7 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
         path_weight="D:\Repositorios\Inv_proj1\weights"#direccion de los pesos     //D:\Repositorios\Inv_proj1\weights  //C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/weights
         path_threshold="D:/Repositorios/Inv_proj1/thresholds" #direccion de umbrales  D:/Repositorios/Inv_proj1/thresholds  //C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/thresholds
         weight=get_files(path_weight)#Guardamos las direcciones completas de todos los archivos de pesos
-        ventana_emergente(str(len(weight))+" pesos guardados")
+        #ventana_emergente(str(len(weight))+" pesos guardados")
         thresholds=get_files(path_threshold)#Direcciones completas de los archivos de umbral
         AI=nh.Percept(weight,thresholds)
         print(str(len(AI.weight_file))) 
@@ -93,7 +93,7 @@ def database_process(name):
     #    if name in archivo:
     #        dh.database(archivo)
     #        break
-    base=dh.database("C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt") #C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt
+    base=dh.database("D:/Repositorios/Inv_proj1/database/Base1.txt") #C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt  || D:/Repositorios/Inv_proj1/database/Base1.txt
     row=base.get_row_by_name(name, 0)
     return "Tu objeto es "+row[0]+"que "+row[1]+" ,"+row[2]+" y "+row[3]
 def get_files(root_path):
