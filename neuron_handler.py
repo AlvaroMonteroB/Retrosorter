@@ -82,10 +82,7 @@ class Percept:
         for cell in resultado:#Lista de los resultantes de la multiplicacion de matrices
             if cell.thresh2>=cell.sum>cell.thresh:#Si el peso supera al umbral, y está debajo de otro umbral, se dispara
                 probable_result.append(cell)
-                print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum)+" en "+str(cell.name))
-            else:
-                print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum)+" en "+str(cell.name))
-                continue
+            print("El umbral es "+str(cell.thresh)+" y la suma es "+str(cell.sum)+" en "+str(cell.name))
         if len(probable_result)==0:
             return None
         elif len(probable_result)>0:#Si hubo por lo menos 1, se armará la lista

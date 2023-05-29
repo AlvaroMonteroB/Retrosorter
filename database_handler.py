@@ -55,9 +55,10 @@ class database:
             for i,row in enumerate(self.data):
                 if name==self.get_cell(i, x):#Si el nombre que buscamos coincide en la columna crrecta
                     output=list()
-                    for j in range(self.pattern):
+                    for j in range(self.campos):
                         output.append(switch_type[self.type_list[j]](row[j]))
-                        return output
+                    
+                    return output
                 else:
                     continue
             return None

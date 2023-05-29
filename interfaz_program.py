@@ -11,8 +11,8 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
     AI=None
     def procesar():
         path_img=casilla1.get()#imagen a comparar
-        path_weight="D:\Repositorios\Inv_proj1\weights"#direccion de los pesos     //D:\Repositorios\Inv_proj1\weights  //C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/weights
-        path_threshold="D:/Repositorios/Inv_proj1/thresholds" #direccion de umbrales  D:/Repositorios/Inv_proj1/thresholds  //C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/thresholds
+        path_weight="C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/weights"#direccion de los pesos     //D:\Repositorios\Inv_proj1\weights  //C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/weights
+        path_threshold="C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/thresholds" #direccion de umbrales  D:/Repositorios/Inv_proj1/thresholds  //C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/thresholds
         weight=get_files(path_weight)#Guardamos las direcciones completas de todos los archivos de pesos
         #ventana_emergente(str(len(weight))+" pesos guardados")
         thresholds=get_files(path_threshold)#Direcciones completas de los archivos de umbral
@@ -28,10 +28,10 @@ def ventana_principal(counter):#La ventana principal tendra los botones para pro
         else:
             inicio=result.nombre.rfind("_")
             aux=result.nombre[inicio+1:]
-            mensaje.config(text="Tu objeto es "+aux)
             image.show_image()
         info_obj=database_process(aux)
-        mensaje.config(text=info_obj)
+        ventana_emergente(info_obj)
+        #mensaje.config(text=info_obj)
 
 
             
@@ -93,9 +93,9 @@ def database_process(name):
     #    if name in archivo:
     #        dh.database(archivo)
     #        break
-    base=dh.database("D:/Repositorios/Inv_proj1/database/Base1.txt") #C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt  || D:/Repositorios/Inv_proj1/database/Base1.txt
+    base=dh.database("C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt") #C:/Users/diavl/OneDrive/Escritorio/Repositorios/Inv_proj1/database/Base1.txt  || D:/Repositorios/Inv_proj1/database/Base1.txt
     row=base.get_row_by_name(name, 0)
-    return "Tu objeto es "+row[0]+"que "+row[1]+" ,"+row[2]+" y "+row[3]
+    return "Tu objeto es "+row[1]+", que "+row[2]+" y "+row[3]
 def get_files(root_path):
     archivos = os.listdir(root_path)
     rutas_completas = []
