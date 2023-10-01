@@ -12,10 +12,10 @@ class result:
 
 class file_weight:
     def __init__(self,vector:list(),name,threshold:int,threshold2:int):
-        self.vector=vector
-        self.name=name
-        self.threshold=threshold
-        self.threshold2=threshold2
+        self.vector=vector#Vector de pesos
+        self.name=name#Nombre del label
+        self.threshold=threshold #Limite inferior
+        self.threshold2=threshold2#Limite superior
 
 class sum_thresh:
     def __init__(self,sum,thresh,sup_thresh,file):
